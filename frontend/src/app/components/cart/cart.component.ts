@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { CurrencyService } from '../../services/currency.service';
 import { CartItem } from '../../models/cart-item.model';
 
 @Component({
@@ -35,7 +36,7 @@ import { CartItem } from '../../models/cart-item.model';
                            style="width: 80px; height: 80px; object-fit: cover;">
                       <div class="flex-grow-1">
                         <h5 class="mb-1">{{item.product.name}}</h5>
-                        <small class="text-muted">Precio: {{item.product.price | currency}}</small>
+                        <small class="text-muted">Precio: {{formatPrice(item.product.price)}}</small>
                       </div>
                       <div class="d-flex align-items-center">
                         <select class="form-select form-select-sm me-2" 
@@ -54,7 +55,7 @@ import { CartItem } from '../../models/cart-item.model';
                     </div>
                     <div class="mt-2 text-end">
                       <small class="text-muted">
-                        Total: {{item.product.price * item.quantity | currency}}     
+                        Total: {{formatPrice(item.product.price * item.quantity)}}     
                       </small>
                     </div>
                   </div>
@@ -70,7 +71,7 @@ import { CartItem } from '../../models/cart-item.model';
               <h5 class="card-title">Resumen del Pedido</h5>
               <div class="d-flex justify-content-between mb-2">
                 <span>Subtotal</span>
-                <span>{{total | currency}}</span>
+                <span>{{formatPrice(total)}}</span>
               </div>
               <div class="d-flex justify-content-between mb-2">
                 <span>Envío</span>
@@ -79,7 +80,7 @@ import { CartItem } from '../../models/cart-item.model';
               <hr>
               <div class="d-flex justify-content-between mb-3">
                 <strong>Total</strong>
-                <strong>{{total | currency}}</strong>
+                <strong>{{formatPrice(total)}}</strong>
               </div>
               <button class="btn btn-primary w-100"
                       [disabled]="cartItems.length === 0"
@@ -111,31 +112,41 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
+    private currencyService: CurrencyService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.cartItems = this.cartService.getItemsSync();
-    this.calculateTotal();
+    this.loadCartItems();
+  }
+
+  loadCartItems() {
+    this.cartService.getItems().subscribe(items => {
+      this.cartItems = items;
+      this.calculateTotal();
+    });
   }
 
   updateQuantity(id: number, event: Event) {
     const select = event.target as HTMLSelectElement;
     const quantity = parseInt(select.value);
+    
     this.cartService.updateQuantity(id, quantity);
-    this.cartItems = this.cartService.getItemsSync();
-    this.calculateTotal();
+    this.loadCartItems();
   }
 
   removeItem(id: number) {
     this.cartService.removeItem(id);
-    this.cartItems = this.cartService.getItemsSync();
-    this.calculateTotal();
+    this.loadCartItems();
   }
 
   calculateTotal() {
     this.total = this.cartItems.reduce((sum, item) => 
       sum + (item.product.price * item.quantity), 0);
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatCLP(price);
   }
 
   goToCheckout() {

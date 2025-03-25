@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CartService } from '../../services/cart.service';
+import { CurrencyService } from '../../services/currency.service';
 import { CartItem } from '../../models/cart-item.model';
 
 interface WebpayResponse {
@@ -57,7 +58,8 @@ export class PaymentComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cartService: CartService
+    private cartService: CartService,
+    private currencyService: CurrencyService
   ) {}
 
   ngOnInit() {
@@ -156,5 +158,9 @@ export class PaymentComponent implements OnInit {
     this.customerName = 'Juan Pérez';
     this.discount = 10;
     this.calculateTotal();
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatCLP(price);
   }
 } 

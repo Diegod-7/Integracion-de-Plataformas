@@ -1,29 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { CurrencyService } from '../../services/currency.service';
+import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
+import { Order, OrderDetail } from '../../models/order.model';
 
-interface WebpayConfirmationResponse {
+interface WebpayResult {
+  buyOrder: string;
+  sessionId: string;
+  cardDetails: {
+    cardNumber: string;
+    cardExpirationDate: string;
+  };
+  transactionDate: string;
   vci: string;
+  urlRedirection: string;
   amount: number;
   status: string;
-  buy_order: string;
-  session_id: string;
-  card_detail: {
-    card_number: string;
-  };
-  accounting_date: string;
-  transaction_date: string;
-  authorization_code: string;
-  payment_type_code: string;
-  response_code: number;
-  installments_number: number;
-}
-
-interface WebpayError {
-  error: string;
-  details?: string;
-  message?: string;
+  [key: string]: any;
 }
 
 @Component({
@@ -53,78 +49,106 @@ interface WebpayError {
   `]
 })
 export class PaymentConfirmationComponent implements OnInit {
+  paymentResult: WebpayResult | null = null;
   loading: boolean = true;
-  success: boolean = false;
-  orderNumber: string = '';
-  errorMessage: string = '';
-  amount: number = 0;
-  authorizationCode: string = '';
-  cardNumber: string = '';
-  transactionDate: string = '';
-  responseCode: number | null = null;
+  error: string | null = null;
+  orderSuccess: boolean = false;
 
   constructor(
+    private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private currencyService: CurrencyService,
+    private cartService: CartService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
-    // Obtener todos los parámetros de la URL
-    const params = this.route.snapshot.queryParamMap;
-    const token = params.get('token_ws');
-    const tbkToken = params.get('TBK_TOKEN');
-    const tbkOrdenCompra = params.get('TBK_ORDEN_COMPRA');
-    const tbkIdSesion = params.get('TBK_ID_SESION');
-
-    console.log('URL Parameters:', { token, tbkToken, tbkOrdenCompra, tbkIdSesion });
-    
-    if (token) {
-      this.confirmPayment(token);
-    } else if (tbkToken || tbkOrdenCompra || tbkIdSesion) {
-      this.loading = false;
-      this.success = false;
-      this.errorMessage = 'La transacción fue cancelada o expiró';
-    } else {
-      this.loading = false;
-      this.success = false;
-      this.errorMessage = 'No se encontraron parámetros de la transacción';
-    }
+    // Obtener los parámetros de la URL
+    this.route.queryParams.subscribe(params => {
+      const token_ws = params['token_ws'];
+      
+      if (!token_ws) {
+        this.error = 'No se recibió un token de transacción válido.';
+        this.loading = false;
+        return;
+      }
+      
+      // Confirmar la transacción con el backend
+      this.http.post<WebpayResult>('http://localhost:3000/api/webpay/confirm', { token_ws })
+        .subscribe({
+          next: (result) => {
+            console.log('Resultado del pago:', result);
+            this.paymentResult = result;
+            
+            // Verificar si el pago fue exitoso
+            if (result.status === 'AUTHORIZED') {
+              // Simulamos que se guardó la orden correctamente
+              this.simulateSaveOrder(result);
+            } else {
+              this.loading = false;
+            }
+          },
+          error: (error: Error) => {
+            console.error('Error al confirmar el pago:', error);
+            this.error = 'Ocurrió un error al procesar el pago. Por favor, contacte con soporte.';
+            this.loading = false;
+          }
+        });
+    });
   }
 
-  async confirmPayment(token: string) {
-    try {
-      const response = await this.http.post<WebpayConfirmationResponse>(
-        'http://localhost:3000/api/webpay/confirm',
-        { token_ws: token }
-      ).toPromise();
+  // Reemplazamos el método saveOrder con una simulación
+  simulateSaveOrder(paymentResult: WebpayResult): void {
+    // Generar un ID único para la orden basado en la fecha y un valor aleatorio
+    const orderId = Date.now() + Math.floor(Math.random() * 1000);
+    
+    // Obtener los productos del carrito antes de vaciarlo
+    this.cartService.getItems().subscribe(cartItems => {
+      // Crear los detalles de la orden desde los items del carrito
+      const orderDetails: OrderDetail[] = cartItems.map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price
+      }));
       
-      console.log('Confirmation Response:', response);
+      // Crear la orden con ID único
+      const order: Order = {
+        id: orderId,
+        orderNumber: paymentResult.buyOrder,
+        total: paymentResult.amount,
+        status: 'Pagado',
+        paymentMethod: 'Webpay',
+        createdAt: new Date(),
+        details: orderDetails
+      };
+      
+      // Guardar la orden usando el servicio
+      this.orderService.createOrder(order).subscribe({
+        next: (savedOrder) => {
+          console.log('Orden guardada:', savedOrder);
+          
+          // Vaciar el carrito después de guardar la orden
+          this.cartService.clearCart();
+          
+          this.orderSuccess = true;
+          this.loading = false;
+        },
+        error: (error: Error) => {
+          console.error('Error al guardar la orden:', error);
+          this.error = 'El pago fue procesado correctamente, pero hubo un error al registrar la orden.';
+          this.loading = false;
+        }
+      });
+    });
+  }
 
-      this.loading = false;
-      if (response && response.status === 'AUTHORIZED') {
-        this.success = true;
-        this.orderNumber = response.buy_order;
-        this.amount = response.amount;
-        this.authorizationCode = response.authorization_code;
-        this.cardNumber = response.card_detail.card_number;
-        this.transactionDate = response.transaction_date;
-      } else {
-        this.success = false;
-        this.responseCode = response?.response_code || null;
-        this.errorMessage = 'La transacción no fue autorizada';
-      }
-    } catch (error) {
-      console.error('Error confirming payment:', error);
-      this.loading = false;
-      this.success = false;
-      
-      if (error instanceof HttpErrorResponse) {
-        const webpayError = error.error as WebpayError;
-        this.errorMessage = webpayError.message || webpayError.details || 'Error al confirmar el pago';
-      } else {
-        this.errorMessage = 'Error al confirmar el pago';
-      }
-    }
+  formatPrice(price: number): string {
+    return this.currencyService.formatCLP(price);
+  }
+
+  goToHome() {
+    this.router.navigate(['/products']);
   }
 } 

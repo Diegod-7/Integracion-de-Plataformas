@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { Product } from '../../models/product';
+import { CurrencyService } from '../../services/currency.service';
+import { CartItem } from '../../models/cart-item.model';
 
 @Component({
   selector: 'app-checkout',
@@ -126,13 +127,13 @@ import { Product } from '../../models/product';
               <h4 class="mb-3">Resumen del pedido</h4>
               <div class="d-flex justify-content-between mb-2" 
                    *ngFor="let item of cartItems">
-                <span>{{item.name}} x {{item.quantity}}</span>
-                <span>{{item.price * item.quantity | currency}}</span>
+                <span>{{item.product.name}} x {{item.quantity}}</span>
+                <span>{{formatPrice(item.product.price * item.quantity)}}</span>
               </div>
               <hr>
               <div class="d-flex justify-content-between mb-2">
                 <span>Subtotal</span>
-                <span>{{total | currency}}</span>
+                <span>{{formatPrice(total)}}</span>
               </div>
               <div class="d-flex justify-content-between mb-2">
                 <span>Envío</span>
@@ -141,7 +142,7 @@ import { Product } from '../../models/product';
               <hr>
               <div class="d-flex justify-content-between">
                 <strong>Total</strong>
-                <strong>{{total | currency}}</strong>
+                <strong>{{formatPrice(total)}}</strong>
               </div>
             </div>
           </div>
@@ -158,12 +159,13 @@ import { Product } from '../../models/product';
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;
-  cartItems: any[] = [];
+  cartItems: CartItem[] = [];
   total: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
     private cartService: CartService,
+    private currencyService: CurrencyService,
     private router: Router
   ) {
     this.checkoutForm = this.formBuilder.group({
@@ -191,5 +193,9 @@ export class CheckoutComponent implements OnInit {
       this.cartService.clearCart();
       this.router.navigate(['/order-success']);
     }
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatCLP(price);
   }
 } 

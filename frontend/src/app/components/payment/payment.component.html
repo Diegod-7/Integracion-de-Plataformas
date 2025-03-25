@@ -10,7 +10,7 @@
              style="width: 100px; height: 100px; object-fit: cover;">
         <div>
           <h5 class="mb-1">{{item.product.name}}</h5>
-          <p class="mb-1">Precio: ${{item.product.price}}</p>
+          <p class="mb-1">Precio: {{formatPrice(item.product.price)}}</p>
           <p class="mb-0">Cantidad: {{item.quantity}}</p>
         </div>
       </div>
@@ -19,7 +19,7 @@
 
   <div class="card mb-4">
     <div class="card-body">
-      <h4>Total de la compra: ${{total}}</h4>
+      <h4>Total de la compra: {{formatPrice(total)}}</h4>
       
       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
+import { CurrencyService } from '../../services/currency.service';
 import { Product } from '../../models/product';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -30,6 +32,16 @@ import { Product } from '../../models/product';
         </div>
       </div>
 
+      <div *ngIf="loading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
       <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" *ngFor="let product of filteredProducts">
           <div class="card h-100">
@@ -42,7 +54,7 @@ import { Product } from '../../models/product';
               <p class="card-text text-muted">{{product.category}}</p>
               <p class="card-text">{{product.description}}</p>
               <div class="d-flex justify-content-between align-items-center">
-                <span class="h5 mb-0">{{product.price | currency}}</span>
+                <span class="h5 mb-0">{{ formatPrice(product.price) }}</span>
                 <span class="badge" 
                       [ngClass]="{'bg-success': product.stock > 5,
                                 'bg-warning': product.stock <= 5 && product.stock > 0,
@@ -84,51 +96,90 @@ import { Product } from '../../models/product';
   `]
 })
 export class ProductListComponent implements OnInit {
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
+  products: (Product & { originalPrice: number })[] = [];
+  filteredProducts: (Product & { originalPrice: number })[] = [];
   categories: string[] = [];
   selectedCategory: string = '';
   cartItemCount: number = 0;
+  loading = true;
+  error: string | null = null;
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private currencyService: CurrencyService,
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.loadProducts();
+  async ngOnInit() {
+    await this.loadProducts();
     this.updateCartCount();
   }
 
-  loadProducts() {
-    this.productService.getProducts().subscribe(
-      (data: Product[]) => {
-        this.products = data;
-        this.filteredProducts = data;
-        this.categories = [...new Set(data.map(p => p.category))];
-      },
-      (error) => {
-        console.error('Error loading products:', error);
-      }
-    );
+  private async loadProducts() {
+    try {
+      this.loading = true;
+      this.error = null;
+
+      // Obtener los productos y la tasa de cambio en paralelo
+      const productsPromise = firstValueFrom(this.productService.getProducts());
+      const exchangeRatePromise = firstValueFrom(this.currencyService.getExchangeRate());
+
+      const [products, exchangeRate] = await Promise.all([
+        productsPromise,
+        exchangeRatePromise
+      ]);
+
+      console.log(`Usando tasa de cambio: 1 USD = ${exchangeRate} CLP`);
+
+      // Convertir los precios de USD a CLP
+      this.products = products.map(product => ({
+        ...product,
+        // Almacenar el precio original en USD
+        originalPrice: product.price,
+        // Convertir y redondear el precio a CLP
+        price: Math.round(product.price * exchangeRate),
+      }));
+
+      this.filteredProducts = this.products;
+      this.categories = [...new Set(this.products.map(p => p.category))];
+      
+    } catch (err) {
+      console.error('Error loading products:', err);
+      this.error = 'Error al cargar los productos. Por favor, intenta nuevamente.';
+    } finally {
+      this.loading = false;
+    }
   }
 
   filterProducts() {
     if (this.selectedCategory) {
-      this.filteredProducts = this.products.filter(
-        p => p.category === this.selectedCategory
-      );
+      this.filteredProducts = this.products.filter(p => p.category === this.selectedCategory);
     } else {
       this.filteredProducts = this.products;
     }
   }
 
-  addToCart(product: Product) {
-    this.cartService.addItem(product, 1);
-    this.updateCartCount();
+  formatPrice(price: number): string {
+    return this.currencyService.formatCLP(price);
   }
 
-  updateCartCount() {
-    this.cartItemCount = this.cartService.getItemsSync().length;
+  addToCart(product: Product & { originalPrice: number }) {
+    // Asegurarse de usar el precio en CLP para el carrito
+    const productWithCLP: Product = {
+      ...product,
+      price: product.price,
+      imageUrl: product.imageUrl || '' // Asegurar que siempre tenga una imageUrl
+    };
+
+    this.cartService.addItem(productWithCLP, 1);
+    this.updateCartCount();
+    console.log('Producto agregado al carrito:', productWithCLP);
+  }
+
+  private updateCartCount() {
+    this.cartService.getItems().subscribe(items => {
+      this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
+    });
   }
 } 

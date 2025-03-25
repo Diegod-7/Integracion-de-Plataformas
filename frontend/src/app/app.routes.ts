@@ -9,6 +9,7 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { PaymentConfirmationComponent } from './components/payment-confirmation/payment-confirmation.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'payment', component: PaymentComponent },
   { path: 'payment/confirmation', component: PaymentConfirmationComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { path: 'orders', component: OrderHistoryComponent }
 ]; 

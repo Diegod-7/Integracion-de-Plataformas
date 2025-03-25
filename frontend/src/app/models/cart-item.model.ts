@@ -1,12 +1,4 @@
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
-  description: string;
-  stock: number;
-  category: string;
-}
+import { Product } from './product';
 
 export interface CartItem {
   id: number;
