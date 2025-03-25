@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-}
+import { CartItem, Product } from '../models/cart-item.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +26,7 @@ export class CartService {
     return this.items;
   }
 
-  addItem(product: any, quantity: number = 1) {
+  addItem(product: Product, quantity: number = 1) {
     const existingItem = this.items.find(item => item.id === product.id);
     
     if (existingItem) {
@@ -41,10 +34,8 @@ export class CartService {
     } else {
       this.items.push({
         id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: quantity,
-        imageUrl: product.imageUrl
+        product: product,
+        quantity: quantity
       });
     }
     
@@ -74,10 +65,10 @@ export class CartService {
   }
 
   getTotal(): number {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   }
 
   private saveItems() {
     localStorage.setItem('cartItems', JSON.stringify(this.items));
   }
-} 
+}

@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const productRoutes = require('./routes/productRoutes');
+const webpayRoutes = require('./routes/webpayRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const sequelize = require('./config/database');
-const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +16,8 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/products', productRoutes);
+app.use('/api/webpay', webpayRoutes);
+app.use('/api/auth', authRoutes);
 
 // Ruta básica
 app.get('/', (req, res) => {

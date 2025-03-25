@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -28,9 +29,29 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
                 <i class="fas fa-box me-1"></i>Productos
               </a>
             </li>
+          </ul>
+          
+          <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link" routerLink="/cart" routerLinkActive="active">
-                <i class="fas fa-shopping-cart me-1"></i>Carrito
+                <i class="fas fa-shopping-cart"></i> Carrito
+              </a>
+            </li>
+            <ng-container *ngIf="!isLoggedIn">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/login" routerLinkActive="active">
+                  Iniciar Sesión
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/register" routerLinkActive="active">
+                  Registrarse
+                </a>
+              </li>
+            </ng-container>
+            <li class="nav-item" *ngIf="isLoggedIn">
+              <a class="nav-link" (click)="logout()" style="cursor: pointer;">
+                Cerrar Sesión
               </a>
             </li>
           </ul>
@@ -81,5 +102,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   `]
 })
 export class AppComponent {
-  title = 'Mi Tienda';
+  constructor(private authService: AuthService) {}
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  logout() {
+    this.authService.logout();
+  }
 } 

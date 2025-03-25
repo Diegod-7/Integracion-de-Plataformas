@@ -3,15 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { Product } from '../../models/product';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-}
+import { CartItem } from '../../models/cart-item.model';
 
 @Component({
   selector: 'app-cart',
@@ -37,13 +29,13 @@ interface CartItem {
                 <div class="list-group">
                   <div *ngFor="let item of cartItems" class="list-group-item">
                     <div class="d-flex align-items-center">
-                      <img [src]="item.imageUrl || 'assets/placeholder.jpg'" 
-                           [alt]="item.name"
+                      <img [src]="item.product.imageUrl || 'assets/placeholder.jpg'" 
+                           [alt]="item.product.name"
                            class="rounded me-3"
                            style="width: 80px; height: 80px; object-fit: cover;">
                       <div class="flex-grow-1">
-                        <h5 class="mb-1">{{item.name}}</h5>
-                        <small class="text-muted">Precio: {{item.price | currency}}</small>
+                        <h5 class="mb-1">{{item.product.name}}</h5>
+                        <small class="text-muted">Precio: {{item.product.price | currency}}</small>
                       </div>
                       <div class="d-flex align-items-center">
                         <select class="form-select form-select-sm me-2" 
@@ -62,7 +54,7 @@ interface CartItem {
                     </div>
                     <div class="mt-2 text-end">
                       <small class="text-muted">
-                        Total: {{item.price * item.quantity | currency}}     
+                        Total: {{item.product.price * item.quantity | currency}}     
                       </small>
                     </div>
                   </div>
@@ -142,10 +134,11 @@ export class CartComponent implements OnInit {
   }
 
   calculateTotal() {
-    this.total = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    this.total = this.cartItems.reduce((sum, item) => 
+      sum + (item.product.price * item.quantity), 0);
   }
 
   goToCheckout() {
-    this.router.navigate(['/checkout']);
+    this.router.navigate(['/payment']);
   }
 } 

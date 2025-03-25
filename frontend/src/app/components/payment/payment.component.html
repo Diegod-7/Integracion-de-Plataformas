@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <h2>Mi compra:</h2>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <div *ngFor="let item of cartItems" class="d-flex align-items-center mb-3">
+        <img [src]="item.product.imageUrl" 
+             [alt]="item.product.name" 
+             class="me-3" 
+             style="width: 100px; height: 100px; object-fit: cover;">
+        <div>
+          <h5 class="mb-1">{{item.product.name}}</h5>
+          <p class="mb-1">Precio: ${{item.product.price}}</p>
+          <p class="mb-0">Cantidad: {{item.quantity}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4>Total de la compra: ${{total}}</h4>
+      
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" (click)="payWithWebpay()">
+          Pagar con tarjeta
+        </button>
+        <button class="btn btn-outline-primary" (click)="showTransferData()">
+          Pagar con transferencia
+        </button>
+      </div>
+
+      <div *ngIf="showingTransferData" class="mt-4">
+        <h5>Datos para transferencia:</h5>
+        <p>Banco: Banco Estado</p>
+        <p>Tipo de cuenta: Cuenta corriente</p>
+        <p>Número de cuenta: 123456789</p>
+        <p>RUT: 76.123.456-7</p>
+        <p>Email: pagos&#64;ferremas.cl</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <button class="btn btn-link w-100" (click)="showLoginForm()">
+        Iniciar sesión para aplicar descuento de cliente
+      </button>
+      
+      <div *ngIf="isLoggedIn" class="mt-3">
+        <p>Cliente: {{customerName}}</p>
+        <p>Descuento aplicado: {{discount}}%</p>
+      </div>
+    </div>
+  </div>
+</div> 
