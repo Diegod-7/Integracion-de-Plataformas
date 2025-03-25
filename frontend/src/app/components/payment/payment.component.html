@@ -21,11 +21,20 @@
     <div class="card-body">
       <h4>Total de la compra: ${{total}}</h4>
       
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
       <div class="d-grid gap-2">
-        <button class="btn btn-primary" (click)="payWithWebpay()">
-          Pagar con tarjeta
+        <button class="btn btn-primary" 
+                (click)="payWithWebpay()" 
+                [disabled]="isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isLoading ? 'Procesando...' : 'Pagar con tarjeta' }}
         </button>
-        <button class="btn btn-outline-primary" (click)="showTransferData()">
+        <button class="btn btn-outline-primary" 
+                (click)="showTransferData()"
+                [disabled]="isLoading">
           Pagar con transferencia
         </button>
       </div>
@@ -43,7 +52,9 @@
 
   <div class="card">
     <div class="card-body">
-      <button class="btn btn-link w-100" (click)="showLoginForm()">
+      <button class="btn btn-link w-100" 
+              (click)="showLoginForm()"
+              [disabled]="isLoading">
         Iniciar sesión para aplicar descuento de cliente
       </button>
       

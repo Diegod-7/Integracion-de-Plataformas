@@ -4,6 +4,7 @@ const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
 const webpayRoutes = require('./routes/webpayRoutes');
 const authRoutes = require('./routes/authRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes');
 
 const sequelize = require('./config/database');
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/webpay', webpayRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Ruta básica
 app.get('/', (req, res) => {

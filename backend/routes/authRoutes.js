@@ -1,16 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: 5432,
-});
+const User = require('../models/User');
 
 // Registro de usuario
 router.post('/register', async (req, res) => {
@@ -18,12 +10,9 @@ router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
     // Verificar si el usuario ya existe
-    const userExists = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
+    const userExists = await User.findOne({ where: { email } });
 
-    if (userExists.rows.length > 0) {
+    if (userExists) {
       return res.status(400).json({ message: 'El email ya está registrado' });
     }
 
@@ -31,13 +20,14 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Insertar nuevo usuario
-    const result = await pool.query(
-      'INSERT INTO users (name, email, password, role, discount_percentage) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, discount_percentage',
-      [name, email, hashedPassword, 'customer', 0]
-    );
-
-    const user = result.rows[0];
+    // Crear nuevo usuario
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: 'customer',
+      discount_percentage: 0
+    });
 
     // Generar token
     const token = jwt.sign(
@@ -66,16 +56,11 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     // Buscar usuario
-    const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
+    const user = await User.findOne({ where: { email } });
 
-    if (result.rows.length === 0) {
+    if (!user) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
-
-    const user = result.rows[0];
 
     // Verificar contraseña
     const validPassword = await bcrypt.compare(password, user.password);
