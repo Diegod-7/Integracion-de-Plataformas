@@ -1,111 +1,115 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CartService, CartItem } from '../../services/cart.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../models/product';
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  imageUrl: string;
+}
 
 @Component({
   selector: 'app-cart',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   template: `
     <div class="container mt-4">
-      <h2 class="text-center mb-4">Carrito de Compras</h2>
+      <h2>Carrito de Compras</h2>
       
-      <div class="row" *ngIf="cartItems.length > 0; else emptyCart">
+      <div class="row">
         <div class="col-md-8">
-          <div class="card mb-3" *ngFor="let item of cartItems">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img [src]="item.imageUrl || 'assets/placeholder.jpg'" 
-                     class="img-fluid rounded-start" 
-                     [alt]="item.name"
-                     style="height: 100px; object-fit: cover;">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div *ngIf="cartItems.length === 0" class="text-center py-5">
+                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Tu carrito está vacío</p>
+                <button class="btn btn-primary" routerLink="/products">
+                  Continuar comprando
+                </button>
               </div>
-              <div class="col-md-10">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">{{item.name}}</h5>
-                    <button class="btn btn-danger btn-sm" 
-                            (click)="removeItem(item.id)">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                  <p class="card-text">
-                    <small class="text-muted">Precio: {{item.price | currency}}</small>
-                  </p>
-                  <div class="d-flex align-items-center">
-                    <div class="input-group" style="width: 130px;">
-                      <button class="btn btn-outline-secondary" 
-                              (click)="updateQuantity(item.id, item.quantity - 1)">-</button>
-                      <input type="number" class="form-control text-center" 
-                             [value]="item.quantity"
-                             (change)="updateQuantity(item.id, $event.target.value)">
-                      <button class="btn btn-outline-secondary" 
-                              (click)="updateQuantity(item.id, item.quantity + 1)">+</button>
+
+              <div *ngIf="cartItems.length > 0">
+                <div class="list-group">
+                  <div *ngFor="let item of cartItems" class="list-group-item">
+                    <div class="d-flex align-items-center">
+                      <img [src]="item.imageUrl || 'assets/placeholder.jpg'" 
+                           [alt]="item.name"
+                           class="rounded me-3"
+                           style="width: 80px; height: 80px; object-fit: cover;">
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1">{{item.name}}</h5>
+                        <small class="text-muted">Precio: {{item.price | currency}}</small>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <select class="form-select form-select-sm me-2" 
+                                style="width: 80px;"
+                                [ngModel]="item.quantity"
+                                (change)="updateQuantity(item.id, $event)">
+                          <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">
+                            {{i}}
+                          </option>
+                        </select>
+                        <button class="btn btn-outline-danger btn-sm"
+                                (click)="removeItem(item.id)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
                     </div>
-                    <p class="ms-3 mb-0">
-                      Total: {{item.price * item.quantity | currency}}
-                    </p>
+                    <div class="mt-2 text-end">
+                      <small class="text-muted">
+                        Total: {{item.price * item.quantity | currency}}     
+                      </small>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div class="col-md-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Resumen del pedido</h5>
-              <hr>
-              <div class="d-flex justify-content-between mb-3">
-                <span>Subtotal:</span>
+              <h5 class="card-title">Resumen del Pedido</h5>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal</span>
                 <span>{{total | currency}}</span>
               </div>
-              <div class="d-flex justify-content-between mb-3">
-                <span>Envío:</span>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Envío</span>
                 <span>Gratis</span>
               </div>
               <hr>
               <div class="d-flex justify-content-between mb-3">
-                <strong>Total:</strong>
+                <strong>Total</strong>
                 <strong>{{total | currency}}</strong>
               </div>
-              <button class="btn btn-primary w-100" 
-                      (click)="goToCheckout()"
-                      [disabled]="cartItems.length === 0">
+              <button class="btn btn-primary w-100"
+                      [disabled]="cartItems.length === 0"
+                      (click)="goToCheckout()">
                 Proceder al pago
               </button>
             </div>
           </div>
         </div>
       </div>
-      
-      <ng-template #emptyCart>
-        <div class="text-center">
-          <img src="assets/empty-cart.png" alt="Carrito vacío" 
-               style="max-width: 200px; margin-bottom: 20px;">
-          <h3>Tu carrito está vacío</h3>
-          <p>¡Agrega algunos productos para comenzar!</p>
-          <button class="btn btn-primary" routerLink="/products">
-            Ir a la tienda
-          </button>
-        </div>
-      </ng-template>
     </div>
   `,
   styles: [`
-    .card {
-      border: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .list-group-item {
+      border-left: none;
+      border-right: none;
     }
-    .input-group input {
-      text-align: center;
+    .list-group-item:first-child {
+      border-top: none;
     }
-    .input-group input::-webkit-outer-spin-button,
-    .input-group input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .input-group input[type=number] {
-      -moz-appearance: textfield;
+    .list-group-item:last-child {
+      border-bottom: none;
     }
   `]
 })
@@ -119,18 +123,26 @@ export class CartComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cartService.getItems().subscribe(items => {
-      this.cartItems = items;
-      this.total = this.cartService.getTotal();
-    });
+    this.cartItems = this.cartService.getItemsSync();
+    this.calculateTotal();
   }
 
-  updateQuantity(productId: number, quantity: number) {
-    this.cartService.updateQuantity(productId, Number(quantity));
+  updateQuantity(id: number, event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const quantity = parseInt(select.value);
+    this.cartService.updateQuantity(id, quantity);
+    this.cartItems = this.cartService.getItemsSync();
+    this.calculateTotal();
   }
 
-  removeItem(productId: number) {
-    this.cartService.removeFromCart(productId);
+  removeItem(id: number) {
+    this.cartService.removeItem(id);
+    this.cartItems = this.cartService.getItemsSync();
+    this.calculateTotal();
+  }
+
+  calculateTotal() {
+    this.total = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
   goToCheckout() {

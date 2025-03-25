@@ -1,67 +1,68 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  imageUrl: string;
-  stock: number;
-}
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-product-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   template: `
     <div class="container mt-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Catálogo de Productos</h2>
-        <button class="btn btn-outline-primary" routerLink="/cart">
-          <i class="fas fa-shopping-cart"></i> Ver Carrito
-          <span class="badge bg-primary ms-2">{{cartItemCount}}</span>
-        </button>
-      </div>
-      
-      <!-- Filtros -->
-      <div class="row mb-4">
-        <div class="col-md-4">
-          <select class="form-select" [(ngModel)]="selectedCategory" (change)="filterProducts()">
+        <div class="d-flex align-items-center">
+          <select class="form-select me-2" 
+                  [(ngModel)]="selectedCategory" 
+                  (change)="filterProducts()">
             <option value="">Todas las categorías</option>
             <option *ngFor="let category of categories" [value]="category">
               {{category}}
             </option>
           </select>
+          <button class="btn btn-outline-primary" routerLink="/cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge bg-danger ms-1">{{cartItemCount}}</span>
+          </button>
         </div>
       </div>
 
-      <!-- Lista de productos -->
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" *ngFor="let product of filteredProducts">
           <div class="card h-100">
-            <a [routerLink]="['/products', product.id]" class="text-decoration-none">
-              <img [src]="product.imageUrl || 'assets/placeholder.jpg'" 
-                   class="card-img-top" 
-                   [alt]="product.name"
-                   style="height: 200px; object-fit: cover;">
-              <div class="card-body">
-                <h5 class="card-title text-dark">{{product.name}}</h5>
-                <p class="card-text text-muted">{{product.description}}</p>
-                <p class="card-text">
-                  <small class="text-muted">Categoría: {{product.category}}</small>
-                </p>
-                <p class="card-text fw-bold text-primary">
-                  {{product.price | currency}}
-                </p>
+            <img [src]="product.imageUrl || 'assets/placeholder.jpg'" 
+                 class="card-img-top" 
+                 [alt]="product.name"
+                 style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+              <h5 class="card-title">{{product.name}}</h5>
+              <p class="card-text text-muted">{{product.category}}</p>
+              <p class="card-text">{{product.description}}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 mb-0">{{product.price | currency}}</span>
+                <span class="badge" 
+                      [ngClass]="{'bg-success': product.stock > 5,
+                                'bg-warning': product.stock <= 5 && product.stock > 0,
+                                'bg-danger': product.stock === 0}">
+                  {{product.stock > 0 ? product.stock + ' disponibles' : 'Sin stock'}}
+                </span>
               </div>
-            </a>
-            <div class="card-footer bg-white border-0 p-3">
-              <button class="btn btn-primary w-100" 
-                      [disabled]="product.stock === 0"
-                      (click)="addToCart(product)">
-                {{product.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}}
-              </button>
+            </div>
+            <div class="card-footer bg-transparent">
+              <div class="d-grid gap-2">
+                <a [routerLink]="['/products', product.id]" 
+                   class="btn btn-outline-primary">
+                  Ver detalles
+                </a>
+                <button class="btn btn-primary"
+                        (click)="addToCart(product)"
+                        [disabled]="product.stock === 0">
+                  <i class="fas fa-shopping-cart me-2"></i>Agregar al carrito
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -70,23 +71,15 @@ interface Product {
   `,
   styles: [`
     .card {
-      border: none;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.2s;
     }
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .text-primary {
-      color: var(--primary-color) !important;
-    }
-    .btn-primary {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-    .btn-primary:hover {
-      background-color: darken(#4CAF50, 10%);
-      border-color: darken(#4CAF50, 10%);
+    .card-img-top {
+      border-top-left-radius: calc(0.25rem - 1px);
+      border-top-right-radius: calc(0.25rem - 1px);
     }
   `]
 })
@@ -104,9 +97,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
-    this.cartService.getItems().subscribe(items => {
-      this.cartItemCount = items.reduce((count, item) => count + item.quantity, 0);
-    });
+    this.updateCartCount();
   }
 
   loadProducts() {
@@ -114,7 +105,7 @@ export class ProductListComponent implements OnInit {
       (data: Product[]) => {
         this.products = data;
         this.filteredProducts = data;
-        this.categories = [...new Set(data.map(product => product.category))];
+        this.categories = [...new Set(data.map(p => p.category))];
       },
       (error) => {
         console.error('Error loading products:', error);
@@ -125,7 +116,7 @@ export class ProductListComponent implements OnInit {
   filterProducts() {
     if (this.selectedCategory) {
       this.filteredProducts = this.products.filter(
-        product => product.category === this.selectedCategory
+        p => p.category === this.selectedCategory
       );
     } else {
       this.filteredProducts = this.products;
@@ -133,6 +124,11 @@ export class ProductListComponent implements OnInit {
   }
 
   addToCart(product: Product) {
-    this.cartService.addToCart(product);
+    this.cartService.addItem(product, 1);
+    this.updateCartCount();
+  }
+
+  updateCartCount() {
+    this.cartItemCount = this.cartService.getItemsSync().length;
   }
 } 

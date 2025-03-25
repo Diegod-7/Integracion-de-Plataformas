@@ -1,57 +1,85 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
   template: `
-    <nav class="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a class="brand" href="/">Ferremas</a>
-        <ul class="nav-links">
-          <li><a routerLink="/products">Productos</a></li>
-          <li><a href="#">Carrito</a></li>
-        </ul>
+        <a class="navbar-brand" routerLink="/">
+          <i class="fas fa-store me-2"></i>Mi Tienda
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/products" routerLinkActive="active">
+                <i class="fas fa-box me-1"></i>Productos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/cart" routerLinkActive="active">
+                <i class="fas fa-shopping-cart me-1"></i>Carrito
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
     <router-outlet></router-outlet>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Mi Tienda</h5>
+            <p>Tu tienda de confianza para todos tus productos favoritos.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <h5>Contacto</h5>
+            <p>
+              <i class="fas fa-envelope me-2"></i>contacto&#64;mitienda.com<br>
+              <i class="fas fa-phone me-2"></i>(123) 456-7890
+            </p>
+          </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center">
+          <p class="mb-0">&copy; 2024 Mi Tienda. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
   `,
   styles: [`
     .navbar {
-      background-color: #333;
-      padding: 1rem 0;
-      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand {
-      color: white;
-      text-decoration: none;
-      font-size: 1.5rem;
+    .navbar-brand {
       font-weight: bold;
     }
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-      margin: 0;
-      padding: 0;
+    .nav-link {
+      font-weight: 500;
     }
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      transition: color 0.3s ease;
+    .nav-link.active {
+      color: var(--primary-color) !important;
     }
-    .nav-links a:hover {
-      color: #4CAF50;
+    footer {
+      margin-top: auto;
     }
   `]
 })
 export class AppComponent {
-  title = 'Ferremas';
+  title = 'Mi Tienda';
 } 
