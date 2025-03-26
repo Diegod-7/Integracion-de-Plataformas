@@ -24,6 +24,9 @@ export class ProductService {
     'https://cdn.pixabay.com/photo/2016/05/31/11/36/saw-1426867_960_720.jpg'
   ];
 
+  // Constante para la imagen del kit de herramientas (index 2)
+  private readonly KIT_TOOLS_IMAGE = this.ferreteriaImages[2];
+
   // Productos simulados
   private products: Product[] = [
     {
@@ -33,7 +36,7 @@ export class ProductService {
       price: 14.99,
       category: 'Herramientas manuales',
       stock: 25,
-      imageUrl: this.ferreteriaImages[0]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 2,
@@ -42,7 +45,7 @@ export class ProductService {
       price: 29.99,
       category: 'Herramientas manuales',
       stock: 15,
-      imageUrl: this.ferreteriaImages[1]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 3,
@@ -51,7 +54,7 @@ export class ProductService {
       price: 65.50,
       category: 'Sets de herramientas',
       stock: 10,
-      imageUrl: this.ferreteriaImages[2]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 4,
@@ -60,7 +63,7 @@ export class ProductService {
       price: 9.99,
       category: 'Herramientas manuales',
       stock: 30,
-      imageUrl: this.ferreteriaImages[3]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 5,
@@ -69,7 +72,7 @@ export class ProductService {
       price: 89.99,
       category: 'Herramientas eléctricas',
       stock: 12,
-      imageUrl: this.ferreteriaImages[4]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 6,
@@ -78,7 +81,7 @@ export class ProductService {
       price: 129.99,
       category: 'Herramientas eléctricas',
       stock: 8,
-      imageUrl: this.ferreteriaImages[5]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 7,
@@ -87,7 +90,7 @@ export class ProductService {
       price: 12.99,
       category: 'Herramientas manuales',
       stock: 20,
-      imageUrl: this.ferreteriaImages[6]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 8,
@@ -96,7 +99,7 @@ export class ProductService {
       price: 49.99,
       category: 'Medición',
       stock: 10,
-      imageUrl: this.ferreteriaImages[7]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 9,
@@ -105,7 +108,7 @@ export class ProductService {
       price: 7.99,
       category: 'Seguridad',
       stock: 50,
-      imageUrl: this.ferreteriaImages[8]
+      imageUrl: this.KIT_TOOLS_IMAGE
     },
     {
       id: 10,
@@ -114,7 +117,7 @@ export class ProductService {
       price: 19.99,
       category: 'Herramientas manuales',
       stock: 15,
-      imageUrl: this.ferreteriaImages[9]
+      imageUrl: this.KIT_TOOLS_IMAGE
     }
   ];
 
@@ -127,23 +130,19 @@ export class ProductService {
   // Método para asignar imágenes a todos los productos
   private assignImagesToProducts() {
     console.log('ProductService: Asignando imágenes a productos');
-    this.products.forEach((product, index) => {
-      // Usar el índice para asignar imágenes de manera uniforme (con módulo para ciclar)
-      const imageIndex = index % this.ferreteriaImages.length;
-      product.imageUrl = this.ferreteriaImages[imageIndex];
+    
+    this.products.forEach((product) => {
+      product.imageUrl = this.KIT_TOOLS_IMAGE;
       console.log(`Producto ${product.id} (${product.name}): imagen asignada ${product.imageUrl}`);
     });
   }
 
   getProducts(): Observable<Product[]> {
     console.log('ProductService: Obteniendo lista de productos');
-    // Asegurarse de que todos los productos tengan una imagen válida antes de devolverlos
+    // Asegurarse de que todos los productos tengan la imagen del kit de herramientas
+    
     this.products.forEach(product => {
-      if (!product.imageUrl) {
-        const randomIndex = Math.floor(Math.random() * this.ferreteriaImages.length);
-        product.imageUrl = this.ferreteriaImages[randomIndex];
-        console.log(`Agregada imagen faltante a producto ${product.id}`);
-      }
+      product.imageUrl = this.KIT_TOOLS_IMAGE;
     });
     return of(this.products);
   }
@@ -153,14 +152,9 @@ export class ProductService {
     // Simular obtener un producto específico por ID
     const product = this.products.find(p => p.id === id);
     
-    // Asegurarse de que el producto tenga una imagen válida
-    if (product && !product.imageUrl) {
-      const randomIndex = Math.floor(Math.random() * this.ferreteriaImages.length);
-      product.imageUrl = this.ferreteriaImages[randomIndex];
-      console.log(`Agregada imagen faltante a producto ${product.id}`);
-    }
-    
+    // Asegurarse de que el producto tenga la imagen del kit de herramientas
     if (product) {
+      product.imageUrl = this.KIT_TOOLS_IMAGE;
       console.log(`Producto encontrado: ${product.name}`);
     } else {
       console.log(`No se encontró producto con ID ${id}`);
@@ -173,14 +167,9 @@ export class ProductService {
     // Asignar un ID único
     const newProduct = {
       ...product,
-      id: this.getNextId()
+      id: this.getNextId(),
+      imageUrl: this.KIT_TOOLS_IMAGE // Siempre usar la imagen del kit de herramientas
     };
-    
-    // Asignar imagen aleatoria si no tiene
-    if (!newProduct.imageUrl) {
-      const randomIndex = Math.floor(Math.random() * this.ferreteriaImages.length);
-      newProduct.imageUrl = this.ferreteriaImages[randomIndex];
-    }
     
     // Añadir el producto al array
     this.products.push(newProduct);
@@ -191,10 +180,8 @@ export class ProductService {
   updateProduct(id: number, product: Product): Observable<Product | undefined> {
     const index = this.products.findIndex(p => p.id === id);
     if (index !== -1) {
-      // Mantener la imagen existente si no se proporciona una nueva
-      if (!product.imageUrl && this.products[index].imageUrl) {
-        product.imageUrl = this.products[index].imageUrl;
-      }
+      // Siempre usar la imagen del kit de herramientas
+      product.imageUrl = this.KIT_TOOLS_IMAGE;
       
       this.products[index] = { ...product, id };
       return of(this.products[index]);

@@ -1,0 +1,113 @@
+@startuml Diagrama de Despliegue de la Tienda de Ferretería
+
+' Configuración del diagrama
+skinparam backgroundColor white
+skinparam roundcorner 10
+
+' Estilos personalizados
+skinparam node {
+  BorderColor #607D8B
+  BackgroundColor #ECEFF1
+  FontColor #263238
+}
+
+skinparam database {
+  BorderColor #1565C0
+  BackgroundColor #BBDEFB
+}
+
+skinparam cloud {
+  BorderColor #7E57C2
+  BackgroundColor #D1C4E9
+}
+
+skinparam arrow {
+  Color #607D8B
+  Thickness 1
+}
+
+' Título
+title Diagrama de Despliegue - Tienda de Ferretería Online
+
+' Cliente
+node "Cliente" as client {
+  node "Navegador Web" as browser {
+    component "Aplicación Angular" as angularApp
+  }
+}
+
+' Servidor de Frontend
+node "Servidor de Frontend" as frontendServer {
+  node "Node.js" as nodeServer {
+    component "Servidor Angular" as angularServer
+  }
+}
+
+' Servidor API Backend
+node "Servidor API Backend" as backendServer {
+  node "Node.js/Express" as expressServer {
+    component "API RESTful" as apiRest {
+      component "Controladores" as controllers
+      component "Servicios" as services
+      component "Repositorios" as repositories
+      component "Middleware" as middleware
+      
+      controllers --> services
+      services --> repositories
+      middleware --> services
+    }
+    
+    component "ORM (Sequelize)" as orm
+  }
+}
+
+' Base de datos
+node "Servidor de Base de Datos" as dbServer {
+  database "PostgreSQL" as postgres {
+    database "Tablas" as tables
+  }
+}
+
+' Servicios externos
+cloud "APIs Externas" as externalApis {
+  node "API de Tipo de Cambio" as exchangeAPI
+  node "WebPay (Transbank)" as webpayAPI
+}
+
+' Conexiones
+client --> frontendServer : "HTTPS"
+browser --> backendServer : "HTTPS/REST"
+repositories --> orm
+orm --> postgres : "TCP/IP"
+services --> exchangeAPI : "HTTPS/REST"
+services --> webpayAPI : "HTTPS/REST"
+
+' Notas explicativas
+note bottom of client
+  Aplicación Angular que se ejecuta en el navegador
+  y se comunica con el backend a través de API REST
+endnote
+
+note left of backendServer
+  Capas del Backend:
+  - Controllers: Manejo de peticiones HTTP
+  - Services: Lógica de negocio
+  - Repositories: Acceso a datos
+  - Middleware: Autenticación, logging, etc.
+endnote
+
+note right of dbServer
+  PostgreSQL almacena:
+  - Catálogo de productos
+  - Información de usuarios
+  - Carritos de compra
+  - Pedidos y transacciones
+endnote
+
+note bottom of externalApis
+  Servicios de terceros:
+  - API de tipo de cambio para conversiones USD/CLP
+  - WebPay para procesamiento de pagos en Chile
+endnote
+
+@enduml 

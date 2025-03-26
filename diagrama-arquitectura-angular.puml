@@ -1,0 +1,117 @@
+@startuml Arquitectura Angular de la Tienda de Ferretería
+
+' Configuración de PlantUML
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' Definir colores personalizados
+!define ANGULAR_COLOR #DD0031
+!define SERVICE_COLOR #42A5F5
+!define COMPONENT_COLOR #66BB6A
+!define MODEL_COLOR #FFB74D
+!define EXTERNAL_COLOR #7E57C2
+
+' Estilos personalizados
+skinparam rectangle {
+  BorderColor #607D8B
+  BorderThickness 1
+  BackgroundColor #FFFFFF
+  FontColor #000000
+}
+
+skinparam arrow {
+  Color #607D8B
+  Thickness 1
+}
+
+' Título
+title Arquitectura Angular de la Tienda de Ferretería
+
+' Container: Aplicación Angular
+rectangle "Frontend (Angular)" as Frontend #ANGULAR_COLOR {
+  ' Componentes principales
+  rectangle "Componentes" as Components #COMPONENT_COLOR {
+    rectangle "NavbarComponent" as NavbarComponent
+    rectangle "ProductListComponent" as ProductListComponent
+    rectangle "ProductDetailComponent" as ProductDetailComponent
+    rectangle "CartComponent" as CartComponent
+    rectangle "CheckoutComponent" as CheckoutComponent
+    rectangle "PaymentComponent" as PaymentComponent
+    rectangle "PaymentConfirmationComponent" as PaymentConfirmationComponent
+  }
+  
+  ' Servicios
+  rectangle "Servicios" as Services #SERVICE_COLOR {
+    rectangle "ProductService\n· getProducts()\n· getProductById()\n· assignImagesToProducts()" as ProductService
+    
+    rectangle "CartService\n· getItems()\n· addItem()\n· removeItem()\n· updateQuantity()\n· getTotal()\n· clearCart()" as CartService
+    
+    rectangle "CartPriceService\n· getConvertedItems()\n· updateCartPrices()\n· updateExchangeRate()" as CartPriceService
+    
+    rectangle "CurrencyService\n· getExchangeRate()\n· convertUSDtoCLP()\n· formatCLP()" as CurrencyService
+  }
+  
+  ' Modelos
+  rectangle "Modelos" as Models #MODEL_COLOR {
+    rectangle "Product" as ProductModel
+    rectangle "CartItem" as CartItemModel
+    rectangle "ConvertedProduct" as ConvertedProductModel
+    rectangle "ConvertedCartItem" as ConvertedCartItemModel
+  }
+  
+  ' Relaciones entre componentes
+  NavbarComponent --> CartService
+  
+  ProductListComponent --> ProductService
+  ProductListComponent --> CartService
+  ProductListComponent --> CurrencyService
+  
+  ProductDetailComponent --> ProductService
+  ProductDetailComponent --> CartService
+  ProductDetailComponent --> CurrencyService
+  
+  CartComponent --> CartService
+  CartComponent --> CartPriceService
+  CartComponent --> CurrencyService
+  
+  CheckoutComponent --> CartService
+  CheckoutComponent --> CurrencyService
+  
+  PaymentComponent --> CartService
+  PaymentComponent --> CurrencyService
+  
+  PaymentConfirmationComponent --> CartService
+  
+  ' Relaciones de servicios
+  CartPriceService --> CartService
+  CartPriceService --> CurrencyService
+  
+  ' Relaciones de modelos
+  ProductService --> ProductModel
+  CartService --> CartItemModel
+  CartService --> ProductModel
+  CartPriceService --> ConvertedCartItemModel
+  CartPriceService --> ConvertedProductModel
+}
+
+' Servicios externos
+rectangle "Servicios Externos" as External #EXTERNAL_COLOR {
+  rectangle "API de Tipo de Cambio\n(open.er-api.com)" as ExchangeAPI
+  rectangle "WebPay\n(Pasarela de Pago)" as WebPay
+}
+
+' Conexiones externas
+CurrencyService --> ExchangeAPI : "Obtiene tasa de cambio USD/CLP"
+PaymentComponent --> WebPay : "Procesa pagos"
+
+' Nota sobre la implementación
+note bottom of Frontend
+  Características principales implementadas:
+  * Conversión automática de precios USD a CLP
+  * Sistema de carrito con precios en moneda local
+  * Manejo de inventario y estado visual del stock
+  * Asignación de imágenes estándar a todos los productos
+  * Procesamiento de pagos a través de WebPay
+  * Almacenamiento local de carrito con reset diario
+endnote
+
+@enduml 

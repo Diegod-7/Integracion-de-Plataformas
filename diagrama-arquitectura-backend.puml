@@ -1,0 +1,144 @@
+@startuml Arquitectura Backend de la Tienda de Ferretería
+
+' Configuración básica sin incluir librerías externas
+skinparam backgroundColor white
+skinparam roundcorner 10
+
+' Definir colores personalizados directamente
+skinparam rectangle {
+  BorderColor #607D8B
+  BorderThickness 1
+  BackgroundColor white
+  FontColor black
+}
+
+skinparam database {
+  BorderColor #1565C0
+  BackgroundColor #BBDEFB
+}
+
+skinparam arrow {
+  Color #607D8B
+  Thickness 1
+}
+
+' Título
+title Arquitectura Backend de la Tienda de Ferretería
+
+' Capas de Backend
+rectangle "Backend (Node.js/Express)" as Backend #4CAF50 {
+  ' Controladores
+  rectangle "Controladores" as Controllers #81C784 {
+    rectangle "ProductController\n- getProducts()\n- getProductById()\n- createProduct()\n- updateProduct()\n- deleteProduct()" as ProductController
+    rectangle "CartController\n- getCart()\n- addItem()\n- updateQuantity()\n- removeItem()\n- clearCart()" as CartController
+    rectangle "OrderController\n- createOrder()\n- getOrderById()\n- getUserOrders()\n- updateOrderStatus()" as OrderController
+    rectangle "PaymentController\n- initiatePayment()\n- processWebpayCallback()\n- getPaymentStatus()" as PaymentController
+    rectangle "UserController\n- register()\n- login()\n- updateProfile()\n- getProfile()" as UserController
+  }
+  
+  ' Servicios
+  rectangle "Servicios" as Services #66BB6A {
+    rectangle "ProductService\n- findAll()\n- findById()\n- create()\n- update()\n- delete()" as ProductService
+    rectangle "CartService\n- getCartItems()\n- addToCart()\n- updateItemQty()\n- removeCartItem()" as CartService
+    rectangle "OrderService\n- createNewOrder()\n- findOrderById()\n- findOrdersByUser()" as OrderService
+    rectangle "PaymentService\n- createTransaction()\n- confirmTransaction()" as PaymentService
+    rectangle "UserService\n- createUser()\n- validateCredentials()\n- updateUserData()" as UserService
+    rectangle "ExchangeRateService\n- getCurrentRate()\n- convertUSDtoCLP()" as ExchangeRateService
+  }
+  
+  ' Repositorios
+  rectangle "Repositorios" as Repositories #43A047 {
+    rectangle "ProductRepository" as ProductRepo
+    rectangle "CartRepository" as CartRepo
+    rectangle "OrderRepository" as OrderRepo
+    rectangle "PaymentRepository" as PaymentRepo
+    rectangle "UserRepository" as UserRepo
+  }
+  
+  ' Middleware
+  rectangle "Middleware" as Middleware #2E7D32 {
+    rectangle "AuthMiddleware\n- validateToken()\n- isAdmin()" as AuthMiddleware
+    rectangle "ErrorHandler" as ErrorHandler
+    rectangle "RequestLogger" as RequestLogger
+    rectangle "CorsConfig" as CorsConfig
+  }
+}
+
+' Base de datos
+database "PostgreSQL" as PostgreSQL {
+  frame "Tablas" {
+    database "products" as ProductsTable
+    database "users" as UsersTable
+    database "carts" as CartsTable
+    database "cart_items" as CartItemsTable
+    database "orders" as OrdersTable
+    database "order_items" as OrderItemsTable
+    database "payments" as PaymentsTable
+    database "categories" as CategoriesTable
+  }
+}
+
+' Servicios Externos
+cloud "Servicios Externos" as ExternalServices {
+  rectangle "API de Tipo de Cambio\n(open.er-api.com)" as ExchangeAPI
+  rectangle "WebPay\n(Transbank)" as WebPay
+}
+
+' Relaciones entre componentes
+' Controladores a Servicios
+ProductController --> ProductService
+CartController --> CartService
+OrderController --> OrderService
+PaymentController --> PaymentService
+UserController --> UserService
+
+' Servicios a Repositorios
+ProductService --> ProductRepo
+CartService --> CartRepo
+OrderService --> OrderRepo
+PaymentService --> PaymentRepo
+UserService --> UserRepo
+
+' Repositorios a Base de datos
+ProductRepo --> ProductsTable
+ProductRepo --> CategoriesTable
+CartRepo --> CartsTable
+CartRepo --> CartItemsTable
+CartRepo --> ProductsTable
+OrderRepo --> OrdersTable
+OrderRepo --> OrderItemsTable
+OrderRepo --> ProductsTable
+OrderRepo --> UsersTable
+PaymentRepo --> PaymentsTable
+PaymentRepo --> OrdersTable
+UserRepo --> UsersTable
+
+' Middleware a otros componentes
+AuthMiddleware --> UserService
+Controllers --> AuthMiddleware
+Controllers --> ErrorHandler
+Controllers --> RequestLogger
+Controllers --> CorsConfig
+
+' Conexiones a servicios externos
+PaymentService --> WebPay : "Procesa pagos"
+ExchangeRateService --> ExchangeAPI : "Obtiene tasas de cambio"
+
+' Notas explicativas
+note bottom of PostgreSQL
+  Relaciones clave:
+  * products-categories: muchos a muchos
+  * carts-cart_items: uno a muchos
+  * carts-users: uno a uno
+  * orders-order_items: uno a muchos
+  * orders-users: muchos a uno
+  * payments-orders: uno a uno
+endnote
+
+note right of ExternalServices
+  APIs de terceros:
+  * WebPay: Pasarela de pago chilena
+  * API de tipo de cambio: Proporciona tasas USD/CLP actualizadas
+endnote
+
+@enduml 

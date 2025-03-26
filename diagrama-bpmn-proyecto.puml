@@ -1,0 +1,154 @@
+@startuml Diagrama BPMN de Ferretería Online
+'Configuración de PlantUML para BPMN
+!define BPMN
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' Usar colores BPMN estándar
+!define PROCESS_BORDER_COLOR #2196F3
+!define USER_BORDER_COLOR #FF9800
+!define SYSTEM_BORDER_COLOR #4CAF50
+!define PAYMENT_BORDER_COLOR #E91E63
+
+' Pools y carriles
+skinparam swimlane {
+  BorderColor #607D8B
+  BorderThickness 2
+  TitleBackgroundColor #ECEFF1
+  TitleFontColor #000000
+}
+
+' Elementos del proceso
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #607D8B
+  FontColor #000000
+  BorderThickness 1
+}
+
+skinparam activityDiamondBackgroundColor #FFFFFF
+skinparam activityDiamondBorderColor #607D8B
+skinparam arrowColor #607D8B
+skinparam activityStartColor #A5D6A7
+skinparam activityEndColor #EF9A9A
+
+' Definición del diagrama BPMN
+title Proceso de Compra en Tienda de Ferretería Online
+
+' Pools/Participantes
+|Cliente|
+|Sistema|
+|Servicio de Pagos|
+|Administración|
+
+' Inicio del proceso
+start
+
+|Cliente|
+:Usuario visita la tienda online;
+:Navega por el catálogo de productos;
+
+' Decisión
+if (¿Continuar navegando?) then (Sí)
+  :Filtra por categoría o busca productos;
+  :Revisa detalles de productos;
+else (No)
+endif
+
+' Agregar al carrito
+:Selecciona producto para comprar;
+:Agrega producto al carrito;
+
+|Sistema|
+:Convierte precio de USD a CLP;
+:Almacena producto en carrito;
+:Muestra badge de stock;
+
+|Cliente|
+' Decisión sobre continuar comprando
+if (¿Seguir comprando?) then (Sí)
+  :Continúa navegando por productos;
+  repeat
+    :Agrega más productos al carrito;
+  repeat while (¿Más productos?) is (Sí) not (No)
+else (No)
+endif
+
+:Revisa carrito de compras;
+
+' Decisión de modificar carrito
+if (¿Modificar carrito?) then (Sí)
+  :Actualiza cantidades o elimina productos;
+  |Sistema|
+  :Recalcula totales en CLP;
+  |Cliente|
+else (No)
+endif
+
+' Usar actividad normal sin etiqueta especial
+note right
+  Punto de referencia para reintentos de pago
+end note
+:Procede al pago;
+
+|Sistema|
+:Prepara resumen de compra;
+:Calcula total final en CLP;
+:Muestra formulario de pago;
+
+|Cliente|
+:Completa datos de envío;
+:Selecciona método de pago (WebPay);
+
+|Sistema|
+:Genera transacción de pago;
+:Redirige a pasarela de pago;
+
+|Servicio de Pagos|
+:Procesa solicitud de pago;
+:Valida datos de tarjeta;
+
+if (¿Pago aprobado?) then (Sí)
+  :Confirma transacción;
+  :Genera comprobante de pago;
+  |Sistema|
+  :Registra pago exitoso;
+  :Actualiza inventario;
+  :Genera orden de compra;
+  :Muestra confirmación al cliente;
+  |Cliente|
+  :Recibe confirmación de compra;
+  :Visualiza detalles de la orden;
+else (No)
+  :Rechaza transacción;
+  |Sistema|
+  :Registra intento fallido;
+  :Notifica al cliente;
+  |Cliente|
+  :Recibe notificación de error;
+  :Intenta pago nuevamente o cancela;
+  ' Usar flecha sin goto
+  -[#red]-> Reintento de pago;
+  ' Volver al flujo principal sin etiqueta
+  |Cliente|
+  :Procede al pago nuevamente;
+endif
+
+|Administración|
+:Recibe notificación de nueva venta;
+:Prepara pedido para envío;
+:Actualiza estado de la orden;
+
+|Cliente|
+:Recibe correo con seguimiento de pedido;
+
+|Administración|
+:Despacha pedido;
+:Marca pedido como completado;
+
+|Cliente|
+:Recibe productos;
+:Puede dejar una reseña (opcional);
+
+stop
+
+@enduml 

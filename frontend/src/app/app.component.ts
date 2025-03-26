@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { CartService } from './services/cart.service';
+import { CurrencyService } from './services/currency.service';
 
 @Component({
   selector: 'app-root',
@@ -53,8 +55,37 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     }
   `]
 })
-export class AppComponent {
-  constructor(private authService: AuthService) {}
+export class AppComponent implements OnInit {
+  constructor(
+    private authService: AuthService,
+    private cartService: CartService,
+    private currencyService: CurrencyService
+  ) {}
+
+  ngOnInit() {
+    // Inicializar tasa de cambio al inicio de la aplicación
+    this.currencyService.getExchangeRate().subscribe(rate => {
+      console.log(`Aplicación inicializada con tasa de cambio: ${rate} CLP por USD`);
+    });
+    
+    // Limpiar el carrito al iniciar para evitar problemas con precios antiguos
+    this.resetCartIfNeeded();
+  }
+
+  /**
+   * Método para reiniciar el carrito si es la primera vez que se abre la aplicación en este día
+   */
+  private resetCartIfNeeded() {
+    const lastVisit = localStorage.getItem('lastVisit');
+    const now = new Date();
+    const today = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    if (!lastVisit || lastVisit !== today) {
+      console.log('Primera visita del día, limpiando carrito para asegurar precios actualizados');
+      this.cartService.clearCart();
+      localStorage.setItem('lastVisit', today);
+    }
+  }
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();

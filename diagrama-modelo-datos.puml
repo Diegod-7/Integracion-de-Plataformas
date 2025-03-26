@@ -1,0 +1,162 @@
+@startuml Modelo de Datos de la Tienda de Ferretería
+
+' Configuración del diagrama
+skinparam backgroundColor white
+skinparam linetype ortho
+skinparam roundcorner 5
+
+' Estilos personalizados
+skinparam class {
+  BackgroundColor #E3F2FD
+  BorderColor #1565C0
+  ArrowColor #1565C0
+}
+
+skinparam note {
+  BackgroundColor #FFF9C4
+  BorderColor #FBC02D
+}
+
+' Título
+title Modelo de Datos PostgreSQL - Tienda de Ferretería
+
+' Entidades
+class "products" as products {
+  id : SERIAL PRIMARY KEY
+  name : VARCHAR(100) NOT NULL
+  description : TEXT
+  price : DECIMAL(10,2) NOT NULL
+  stock : INTEGER NOT NULL
+  image_url : VARCHAR(255)
+  category_id : INTEGER FK
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "categories" as categories {
+  id : SERIAL PRIMARY KEY
+  name : VARCHAR(50) NOT NULL
+  description : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "users" as users {
+  id : SERIAL PRIMARY KEY
+  username : VARCHAR(50) UNIQUE NOT NULL
+  email : VARCHAR(100) UNIQUE NOT NULL
+  password : VARCHAR(255) NOT NULL
+  full_name : VARCHAR(100)
+  address : TEXT
+  phone : VARCHAR(20)
+  role : VARCHAR(20) DEFAULT 'customer'
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "carts" as carts {
+  id : SERIAL PRIMARY KEY
+  user_id : INTEGER FK
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "cart_items" as cart_items {
+  id : SERIAL PRIMARY KEY
+  cart_id : INTEGER FK
+  product_id : INTEGER FK
+  quantity : INTEGER NOT NULL
+  price_snapshot : DECIMAL(10,2) NOT NULL
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "orders" as orders {
+  id : SERIAL PRIMARY KEY
+  user_id : INTEGER FK
+  status : VARCHAR(20) NOT NULL
+  total_amount : DECIMAL(10,2) NOT NULL
+  shipping_address : TEXT NOT NULL
+  shipping_city : VARCHAR(50) NOT NULL
+  shipping_zipcode : VARCHAR(20)
+  order_date : TIMESTAMP NOT NULL
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "order_items" as order_items {
+  id : SERIAL PRIMARY KEY
+  order_id : INTEGER FK
+  product_id : INTEGER FK
+  quantity : INTEGER NOT NULL
+  price_snapshot : DECIMAL(10,2) NOT NULL
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "payments" as payments {
+  id : SERIAL PRIMARY KEY
+  order_id : INTEGER FK UNIQUE
+  amount : DECIMAL(10,2) NOT NULL
+  payment_method : VARCHAR(50) NOT NULL
+  status : VARCHAR(20) NOT NULL
+  transaction_id : VARCHAR(100)
+  transaction_data : JSONB
+  payment_date : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+class "product_categories" as product_categories {
+  product_id : INTEGER FK
+  category_id : INTEGER FK
+  PRIMARY KEY (product_id, category_id)
+}
+
+' Relaciones
+products "1" -- "0..*" order_items : "aparece en"
+products "1" -- "0..*" cart_items : "aparece en"
+products "0..*" -- "0..*" categories : "pertenece a > \n < clasifica"
+product_categories "0..*" -- "1" categories : "clasifica"
+product_categories "0..*" -- "1" products : "pertenece a"
+
+users "1" -- "0..*" orders : "realiza"
+users "1" -- "0..1" carts : "posee"
+
+carts "1" -- "0..*" cart_items : "contiene"
+
+orders "1" -- "0..*" order_items : "incluye"
+orders "1" -- "0..1" payments : "tiene"
+
+' Notas explicativas
+note bottom of products
+  Los productos tienen un precio en USD
+  que se convierte a CLP mediante el servicio
+  de tipo de cambio.
+end note
+
+note right of product_categories
+  Tabla de unión para la relación
+  muchos a muchos entre productos
+  y categorías.
+end note
+
+note bottom of payments
+  El campo transaction_data almacena
+  la respuesta completa de WebPay
+  como un objeto JSON.
+end note
+
+note left of cart_items
+  price_snapshot guarda el precio
+  en el momento de agregar al carrito,
+  ya convertido a CLP.
+end note
+
+note left of order_items
+  price_snapshot guarda el precio
+  final en CLP al momento de
+  crear la orden.
+end note
+
+@enduml 

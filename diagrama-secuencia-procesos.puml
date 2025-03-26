@@ -1,0 +1,155 @@
+@startuml Diagrama de Secuencia - Procesos Clave de la Tienda
+
+' Configuración PlantUML
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 5
+skinparam maxmessagesize 200
+skinparam sequenceParticipant underline
+
+' Estilo de colores
+skinparam sequence {
+  ArrowColor #0D47A1
+  LifeLineBorderColor #0D47A1
+  LifeLineBackgroundColor #BBDEFB
+  
+  ParticipantBorderColor #0D47A1
+  ParticipantBackgroundColor #BBDEFB
+  ParticipantFontColor #000000
+  
+  ActorBorderColor #0097A7
+  ActorBackgroundColor #B2EBF2
+  ActorFontColor #000000
+}
+
+' Título
+title Diagrama de Secuencia - Flujos Principales de la Tienda de Ferretería
+
+' Participantes
+actor Usuario
+participant "ProductListComponent" as ProductList
+participant "ProductDetailComponent" as ProductDetail
+participant "CartComponent" as Cart
+participant "ProductService" as ProductService
+participant "CartService" as CartService
+participant "CartPriceService" as CartPriceService
+participant "CurrencyService" as CurrencyService
+participant "API de Cambio\n(Externa)" as ExchangeAPI
+
+' Separación del diagrama en secciones
+== Inicialización de la Aplicación ==
+
+' Inicialización
+ProductService -> ProductService: constructor()
+activate ProductService
+ProductService -> ProductService: assignImagesToProducts()
+note right: Asigna imagen del kit de herramientas\na todos los productos
+deactivate ProductService
+
+CurrencyService -> CurrencyService: constructor()
+activate CurrencyService
+CurrencyService -> ExchangeAPI: Solicita tasa de cambio USD/CLP
+ExchangeAPI --> CurrencyService: Devuelve tasa (ej: 850 CLP por 1 USD)
+CurrencyService -> CurrencyService: Almacena tasa en caché
+deactivate CurrencyService
+
+CartPriceService -> CartPriceService: constructor()
+activate CartPriceService
+CartPriceService -> CurrencyService: getExchangeRate()
+CurrencyService --> CartPriceService: Devuelve tasa de cambio
+CartPriceService -> CartService: Se suscribe a cambios en carrito
+deactivate CartPriceService
+
+== Navegación y Visualización de Productos ==
+
+Usuario -> ProductList: Navega a la lista de productos
+activate ProductList
+ProductList -> ProductService: getProducts()
+activate ProductService
+ProductService -> ProductService: Verifica imágenes de productos
+ProductService --> ProductList: Devuelve lista de productos
+deactivate ProductService
+
+ProductList -> CurrencyService: convertUSDtoCLP(producto.price)
+activate CurrencyService
+CurrencyService -> CurrencyService: Convierte USD a CLP
+CurrencyService --> ProductList: Precios convertidos
+deactivate CurrencyService
+
+ProductList -> ProductList: Muestra productos con precios en CLP
+ProductList -> ProductList: Muestra badges de estado de stock
+deactivate ProductList
+
+Usuario -> ProductDetail: Selecciona un producto
+activate ProductDetail
+ProductDetail -> ProductService: getProductById(id)
+activate ProductService
+ProductService -> ProductService: Asigna imagen del kit de herramientas
+ProductService --> ProductDetail: Devuelve detalles del producto
+deactivate ProductService
+
+ProductDetail -> CurrencyService: convertUSDtoCLP(producto.price)
+activate CurrencyService
+CurrencyService --> ProductDetail: Precio convertido
+deactivate CurrencyService
+
+ProductDetail -> ProductDetail: Muestra producto con precio en CLP
+deactivate ProductDetail
+
+== Gestión del Carrito de Compras ==
+
+Usuario -> ProductDetail: Agrega producto al carrito
+activate ProductDetail
+ProductDetail -> CartService: addItem(producto, cantidad)
+activate CartService
+CartService -> CartService: Guarda producto en carrito
+CartService --> ProductDetail: Confirma producto agregado
+deactivate CartService
+deactivate ProductDetail
+
+CartService -> CartPriceService: Notifica cambio en carrito (Observable)
+activate CartPriceService
+CartPriceService -> CartPriceService: updateCartPrices()
+CartPriceService -> CurrencyService: convertUSDtoCLP() para cada item
+activate CurrencyService
+CurrencyService --> CartPriceService: Precios convertidos
+deactivate CurrencyService
+deactivate CartPriceService
+
+Usuario -> Cart: Visualiza carrito
+activate Cart
+Cart -> CartPriceService: getConvertedItems()
+activate CartPriceService
+CartPriceService --> Cart: Items con precios convertidos
+deactivate CartPriceService
+
+Cart -> CurrencyService: formatCLP() para cada precio
+activate CurrencyService
+CurrencyService --> Cart: Precios formateados como CLP
+deactivate CurrencyService
+
+Cart -> Cart: Muestra items con precios en CLP
+deactivate Cart
+
+Usuario -> Cart: Actualiza cantidad de un producto
+activate Cart
+Cart -> CartService: updateQuantity(itemId, cantidad)
+activate CartService
+CartService -> CartService: Actualiza cantidad del item
+CartService --> Cart: Confirma actualización
+deactivate CartService
+deactivate Cart
+
+CartService -> CartPriceService: Notifica cambio (Observable)
+activate CartPriceService
+CartPriceService -> CartPriceService: updateCartPrices()
+deactivate CartPriceService
+
+== Procesos Administrativos ==
+
+note over ProductService, CartService
+  Los procesos administrativos (como crear, actualizar o eliminar productos)
+  también utilizan la misma imagen de kit de herramientas para mantener
+  consistencia visual en toda la aplicación.
+end note
+
+@enduml 

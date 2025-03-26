@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CurrencyService } from '../../services/currency.service';
+import { CartPriceService } from '../../services/cart-price.service';
 import { CartItem } from '../../models/cart-item.model';
 
 @Component({
@@ -109,19 +110,25 @@ import { CartItem } from '../../models/cart-item.model';
 export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   total: number = 0;
+  exchangeRate: number = 850; // Valor predeterminado
 
   constructor(
     private cartService: CartService,
+    private cartPriceService: CartPriceService,
     private currencyService: CurrencyService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.loadCartItems();
-  }
-
-  loadCartItems() {
-    this.cartService.getItems().subscribe(items => {
+    // Obtener tasa de cambio actual
+    this.currencyService.getExchangeRate().subscribe(rate => {
+      this.exchangeRate = rate;
+      console.log('Carrito: Tasa de cambio actualizada:', rate);
+    });
+    
+    // Usar el servicio cartPriceService para obtener items con precios convertidos
+    this.cartPriceService.getConvertedItems().subscribe(items => {
+      console.log('Carrito: Items con precios convertidos recibidos:', items);
       this.cartItems = items;
       this.calculateTotal();
     });
@@ -132,12 +139,10 @@ export class CartComponent implements OnInit {
     const quantity = parseInt(select.value);
     
     this.cartService.updateQuantity(id, quantity);
-    this.loadCartItems();
   }
 
   removeItem(id: number) {
     this.cartService.removeItem(id);
-    this.loadCartItems();
   }
 
   calculateTotal() {
