@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -36,13 +37,19 @@ import { CartService } from '../../services/cart.service';
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user"></i> Mi Cuenta
+                <i class="fas fa-user"></i> {{ isLoggedIn ? 'Mi Cuenta' : 'Cuenta' }}
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" routerLink="/login">Iniciar Sesión</a></li>
-                <li><a class="dropdown-item" routerLink="/register">Registrarse</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" routerLink="/orders">Mis Pedidos</a></li>
+                <ng-container *ngIf="!isLoggedIn">
+                  <li><a class="dropdown-item" routerLink="/login">Iniciar Sesión</a></li>
+                  <li><a class="dropdown-item" routerLink="/register">Registrarse</a></li>
+                </ng-container>
+                <ng-container *ngIf="isLoggedIn">
+                  <li><a class="dropdown-item" routerLink="/profile">Mi Perfil</a></li>
+                  <li><a class="dropdown-item" routerLink="/orders">Mis Pedidos</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" (click)="logout()">Cerrar Sesión</a></li>
+                </ng-container>
               </ul>
             </li>
           </ul>
@@ -61,20 +68,38 @@ import { CartService } from '../../services/cart.service';
     .badge {
       font-size: 0.6rem;
     }
+    .dropdown-item {
+      cursor: pointer;
+    }
   `]
 })
 export class NavbarComponent implements OnInit {
   cartItemCount = 0;
+  isLoggedIn = false;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.updateCartCount();
+    this.checkAuthStatus();
   }
 
   updateCartCount(): void {
     this.cartService.getItems().subscribe(items => {
       this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
     });
+  }
+
+  checkAuthStatus(): void {
+    this.authService.currentUser.subscribe(user => {
+      this.isLoggedIn = !!user;
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 } 

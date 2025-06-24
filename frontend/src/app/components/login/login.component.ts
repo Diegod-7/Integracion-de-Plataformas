@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -62,18 +62,32 @@ import { AuthService } from '../../services/auth.service';
   `,
   styles: []
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   credentials = {
     email: '',
     password: ''
   };
   loading = false;
   error = '';
+  returnUrl: string = '/';
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit() {
+    // Captura la URL de retorno de los parámetros de consulta si existe
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || '/';
+    });
+    
+    // Si ya está autenticado, redirigir al inicio
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit() {
     if (this.loading) return;
@@ -83,11 +97,12 @@ export class LoginComponent {
 
     this.authService.login(this.credentials).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        this.router.navigate([this.returnUrl]);
       },
       error: (error) => {
         this.error = 'Error al iniciar sesión. Por favor, verifica tus credenciales.';
         this.loading = false;
+        console.error('Error de login:', error);
       }
     });
   }

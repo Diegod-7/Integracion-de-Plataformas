@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -76,7 +76,7 @@ import { AuthService } from '../../services/auth.service';
   `,
   styles: []
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   userData = {
     name: '',
     email: '',
@@ -87,8 +87,16 @@ export class RegisterComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit() {
+    // Si ya está autenticado, redirigir al inicio
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit() {
     if (this.loading) return;
@@ -101,7 +109,12 @@ export class RegisterComponent {
         this.router.navigate(['/']);
       },
       error: (error) => {
-        this.error = 'Error al crear la cuenta. Por favor, intenta nuevamente.';
+        if (error.status === 400 && error.error?.message) {
+          this.error = error.error.message;
+        } else {
+          this.error = 'Error al crear la cuenta. Por favor, intenta nuevamente.';
+        }
+        console.error('Error de registro:', error);
         this.loading = false;
       }
     });

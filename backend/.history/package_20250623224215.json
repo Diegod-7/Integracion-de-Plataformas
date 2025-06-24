@@ -1,0 +1,53 @@
+{
+  "name": "ferremas-backend",
+  "version": "1.0.0",
+  "description": "Backend para la tienda Ferremas",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:auth": "jest tests/auth.test.js",
+    "test:products": "jest tests/products.test.js",
+    "test:newsletter": "jest tests/newsletter.test.js",
+    "test:webpay": "jest tests/webpay.test.js",
+    "test:security": "jest tests/security.test.js",
+    "test:performance": "jest tests/performance.test.js",
+    "test:integration": "jest tests/integration.test.js",
+    "test:api-validation": "jest tests/api-validation.test.js",
+    "test:stress": "jest tests/stress-testing.test.js --runInBand --maxWorkers=1",
+    "test:basic": "jest tests/auth.test.js tests/products.test.js tests/newsletter.test.js tests/webpay.test.js",
+    "test:advanced": "jest tests/security.test.js tests/performance.test.js tests/integration.test.js tests/api-validation.test.js",
+    "test:all-extended": "jest --runInBand",
+    "generate-excel": "node tests/excel-generator.js",
+    "generate-excel-improved": "node tests/excel-generator-improved.js",
+    "generate-excel-professional": "node tests/excel-generator-professional.js",
+    "test-and-report": "node tests/run-tests-and-generate-report.js",
+    "show-summary": "node tests/show-summary.js",
+    "test:quick": "jest --testPathIgnorePatterns=stress-testing.test.js performance.test.js",
+    "test:ci": "jest --coverage --runInBand --testPathIgnorePatterns=stress-testing.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.1",
+    "transbank-sdk": "^5.0.0"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0",
+    "jest": "^30.0.2",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.1",
+    "xlsx": "^0.18.5"
+  }
+}

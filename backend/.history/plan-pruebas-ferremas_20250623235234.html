@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Pruebas de Software - Sistema de E-commerce Ferremas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            border-bottom: 3px solid #2c5aa0;
+        }
+        h1 {
+            color: #2c5aa0;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #2c5aa0;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #4a6fa5;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #6b7f99;
+            margin-top: 20px;
+        }
+        .project-info {
+            background: #e8f0fe;
+            padding: 15px;
+            border-left: 4px solid #2c5aa0;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c5aa0;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc ul ul {
+            padding-left: 20px;
+        }
+        .toc li {
+            margin: 5px 0;
+        }
+        .risk-matrix {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-strategy {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .resource-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #2c5aa0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Plan de Pruebas de Software</h1>
+            <div class="project-info">
+                <h2>Sistema de E-commerce Ferremas</h2>
+                <p><strong>Fecha:</strong> 23/06/2025</p>
+                <p><strong>Responsable:</strong> Diego Díaz</p>
+                <p><strong>Versión:</strong> 1.0.0</p>
+            </div>
+        </div>
+
+        <h2>Historia de Revisiones</h2>
+        <table>
+            <tr>
+                <th>Fecha</th>
+                <th>Versión</th>
+                <th>Descripción</th>
+                <th>Autor</th>
+            </tr>
+            <tr>
+                <td>2025-01-24</td>
+                <td>1.0.0</td>
+                <td>Documento inicial - Plan completo de pruebas</td>
+                <td>Diego Díaz</td>
+            </tr>
+        </table>
+
+        <div class="toc">
+            <h2>Tabla de Contenidos</h2>
+            <ul>
+                <li>1. Introducción
+                    <ul>
+                        <li>1.1 Resumen ejecutivo</li>
+                        <li>1.2 Alcance de las pruebas</li>
+                        <li>1.3 Definiciones, acrónimos y abreviaciones</li>
+                        <li>1.4 Referencias</li>
+                    </ul>
+                </li>
+                <li>2. Requerimientos para pruebas
+                    <ul>
+                        <li>2.1 Casos de uso</li>
+                        <li>2.2 Requerimientos funcionales</li>
+                        <li>2.3 Requerimientos No-Funcionales</li>
+                    </ul>
+                </li>
+                <li>3. Estrategia de Pruebas</li>
+                <li>4. Recursos</li>
+                <li>5. Actividades e Hitos del Plan de Pruebas</li>
+                <li>6. Entregables</li>
+                <li>7. Anexos</li>
+            </ul>
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>1. Introducción</h2>
+        
+        <h3>1.1 Resumen ejecutivo</h3>
+        <p>Este documento presenta el Plan de Pruebas de Software para el <strong>Sistema de E-commerce Ferremas</strong>, una plataforma completa de comercio electrónico desarrollada con Node.js, Express.js, PostgreSQL y integración con Transbank para pagos.</p>
+        
+        <p>El plan establece una estrategia integral de testing que abarca 23 casos de prueba principales con más de 500 validaciones individuales, cubriendo aspectos funcionales, de seguridad, rendimiento e integración. Este es un plan maestro que define el alcance completo del esfuerzo de pruebas para garantizar la calidad y confiabilidad del sistema antes de su despliegue en producción.</p>
+
+        <h3>1.2 Alcance de las pruebas</h3>
+        
+        <h4>1.2.1 Elementos de pruebas</h4>
+        <p>Los siguientes módulos y componentes serán sometidos a pruebas:</p>
+        <ul>
+            <li><strong>Módulo de Autenticación:</strong> Registro, login, validación JWT, seguridad de sesiones</li>
+            <li><strong>Módulo de Productos:</strong> CRUD, búsqueda, filtros, paginación, validaciones</li>
+            <li><strong>Módulo de Newsletter:</strong> Suscripciones, validación de emails, gestión de listas</li>
+            <li><strong>Módulo de Pagos (Webpay):</strong> Transacciones, confirmaciones, integración Transbank</li>
+            <li><strong>API REST:</strong> Endpoints, validaciones, respuestas HTTP, manejo de errores</li>
+            <li><strong>Base de Datos:</strong> Integridad, consistencia, performance de consultas</li>
+            <li><strong>Seguridad:</strong> Inyección SQL, XSS, autenticación, autorización</li>
+        </ul>
+
+        <h4>1.2.2 Pruebas funcionales</h4>
+        <p>Las pruebas funcionales utilizan técnicas de "Caja Negra" para verificar el comportamiento del sistema sin inspeccionar detalles internos. Se utilizan los siguientes tipos de datos de entrada:</p>
+        <ul>
+            <li><strong>Valores normales:</strong> Datos típicos de uso cotidiano</li>
+            <li><strong>Valores límites:</strong> Valores en los bordes de rangos aceptables</li>
+            <li><strong>Valores de borde:</strong> Valores justo dentro y fuera de límites</li>
+            <li><strong>Valores ilegales:</strong> Datos inválidos para probar manejo de errores</li>
+        </ul>
+
+        <h4>1.2.3 Riesgos</h4>
+        <p>Se han identificado los siguientes riesgos principales:</p>
+
+        <div class="risk-matrix">
+            <h5>Matriz de Riesgos - Pruebas</h5>
+            <table>
+                <tr>
+                    <th>Nº Riesgo</th>
+                    <th>Descripción</th>
+                    <th>Gravedad</th>
+                    <th>Acción</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Fallas en integración con Transbank por cambios en API</td>
+                    <td>Alto</td>
+                    <td>Monitoreo continuo de documentación Transbank, pruebas automatizadas</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Vulnerabilidades de seguridad no detectadas</td>
+                    <td>Alto</td>
+                    <td>Suite completa de pruebas de seguridad, auditorías regulares</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Problemas de rendimiento bajo carga</td>
+                    <td>Medio</td>
+                    <td>Pruebas de stress y performance automatizadas</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Inconsistencias en base de datos</td>
+                    <td>Medio</td>
+                    <td>Validaciones de integridad referencial, backups de prueba</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Incompatibilidad con diferentes navegadores</td>
+                    <td>Bajo</td>
+                    <td>Pruebas cross-browser, estándares web</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Cambios en requerimientos durante testing</td>
+                    <td>Medio</td>
+                    <td>Documentación actualizada, comunicación con stakeholders</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>1.3 Definiciones, acrónimos y abreviaciones</h3>
+        <table>
+            <tr>
+                <th>Término</th>
+                <th>Definición</th>
+            </tr>
+            <tr>
+                <td>API</td>
+                <td>Application Programming Interface - Interfaz de Programación de Aplicaciones</td>
+            </tr>
+            <tr>
+                <td>CRUD</td>
+                <td>Create, Read, Update, Delete - Operaciones básicas de base de datos</td>
+            </tr>
+            <tr>
+                <td>JWT</td>
+                <td>JSON Web Token - Estándar para tokens de autenticación</td>
+            </tr>
+            <tr>
+                <td>XSS</td>
+                <td>Cross-Site Scripting - Vulnerabilidad de seguridad web</td>
+            </tr>
+            <tr>
+                <td>SQL Injection</td>
+                <td>Inyección SQL - Técnica de ataque a bases de datos</td>
+            </tr>
+            <tr>
+                <td>REST</td>
+                <td>Representational State Transfer - Arquitectura de servicios web</td>
+            </tr>
+        </table>
+
+        <h3>1.4 Referencias</h3>
+        <ul>
+            <li>Documentación técnica del Sistema de E-commerce Ferremas v1.0</li>
+            <li>Especificaciones de API Transbank WebPay Plus</li>
+            <li>Estándares de seguridad OWASP Top 10</li>
+            <li>Documentación Jest Testing Framework</li>
+            <li>Guía de pruebas de integración Node.js</li>
+        </ul>
+
+        <div class="page-break"></div>
+
+        <h2>2. Requerimientos para pruebas</h2>
+
+        <h3>2.1 Casos de uso</h3>
+        
+        <h4>2.1.1 Vista global</h4>
+        <p>El sistema cuenta con los siguientes casos de uso principales:</p>
+        
+        <h4>2.1.2 Caso de uso 1: Gestión de Usuarios</h4>
+        <ul>
+            <li>Registro de nuevos usuarios</li>
+            <li>Autenticación de usuarios existentes</li>
+            <li>Validación y manejo de sesiones</li>
+        </ul>
+        
+        <h4>2.1.3 Caso de uso 2: Gestión de Productos</h4>
+        <ul>
+            <li>Creación, consulta, actualización y eliminación de productos</li>
+            <li>Búsqueda y filtrado de productos</li>
+            <li>Paginación de resultados</li>
+        </ul>
+        
+        <h4>2.1.4 Caso de uso 3: Proceso de Compra</h4>
+        <ul>
+            <li>Selección de productos</li>
+            <li>Integración con sistema de pagos Transbank</li>
+            <li>Confirmación de transacciones</li>
+        </ul>
+
+        <h3>2.2 Requerimientos funcionales</h3>
+        
+        <h4>2.2.1 Componentes comunes</h4>
+        <ul>
+            <li>Validación de entrada de datos</li>
+            <li>Manejo de errores HTTP</li>
+            <li>Logging y auditoría</li>
+            <li>Conexión a base de datos PostgreSQL</li>
+        </ul>
+        
+        <h4>2.2.2 Componente de Autenticación</h4>
+        <ul>
+            <li>Encriptación de contraseñas con bcrypt</li>
+            <li>Generación y validación de tokens JWT</li>
+            <li>Middleware de autenticación</li>
+        </ul>
+        
+        <h4>2.2.3 Componente de Pagos</h4>
+        <ul>
+            <li>Integración con SDK Transbank</li>
+            <li>Validación de montos y parámetros</li>
+            <li>Manejo de respuestas de confirmación</li>
+        </ul>
+
+        <h3>2.3 Requerimientos No-Funcionales</h3>
+        
+        <h4>2.3.1 Componente de Performance</h4>
+        <table>
+            <tr>
+                <th>Nro</th>
+                <th>Caso de Uso</th>
+                <th>Input</th>
+                <th>Output</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Tiempo de respuesta API</td>
+                <td>Request HTTP</td>
+                <td>&lt; 2 segundos</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Concurrencia de usuarios</td>
+                <td>50 usuarios simultáneos</td>
+                <td>Sin degradación &gt; 20%</td>
+            </tr>
+        </table>
+        
+        <h4>2.3.2 Componente de Seguridad</h4>
+        <table>
+            <tr>
+                <th>Nro</th>
+                <th>Caso de Uso</th>
+                <th>Input</th>
+                <th>Output</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Resistencia a inyección SQL</td>
+                <td>Payloads maliciosos</td>
+                <td>Rechazo seguro</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Validación XSS</td>
+                <td>Scripts maliciosos</td>
+                <td>Sanitización correcta</td>
+            </tr>
+        </table>
+
+        <div class="page-break"></div>
+
+        <h2>3. Estrategia de Pruebas</h2>
+
+        <div class="test-strategy">
+            <p>La estrategia de pruebas se basa en un enfoque integral que combina pruebas automatizadas con Jest y Supertest, cubriendo múltiples dimensiones de calidad del software.</p>
+        </div>
+
+        <h3>3.1 Tipos de pruebas</h3>
+
+        <h4>3.1.1 Pruebas funcionales</h4>
+        <table>
+            <tr>
+                <th>Aspecto</th>
+                <th>Descripción</th>
+            </tr>
+            <tr>
+                <td><strong>Objetivo de la prueba:</strong></td>
+                <td>Asegurar la funcionalidad completa del sistema incluyendo navegación, ingreso de datos, procesamiento y recuperación de resultados. Validar que las reglas de negocio se implementen correctamente.</td>
+            </tr>
+            <tr>
+                <td><strong>Técnica a utilizar:</strong></td>
+                <td>Ejecutar cada caso de uso usando datos válidos e inválidos para comprobar resultados esperados y manejo de errores. Utilizar Jest y Supertest para automatización de pruebas de API.</td>
+            </tr>
+            <tr>
+                <td><strong>Criterio de validación:</strong></td>
+                <td>Todas las pruebas planificadas ejecutadas correctamente. Todos los defectos identificados y documentados. Cobertura de código superior al 80%.</td>
+            </tr>
+            <tr>
+                <td><strong>Consideraciones especiales:</strong></td>
+                <td>Validación especial para integración con Transbank. Pruebas específicas para diferentes formatos de email y validaciones de productos.</td>
+            </tr>
+        </table>
+
+        <h4>3.1.2 Pruebas de rendimiento (Performance)</h4>
+        <p>Enfocadas en verificar tiempos de respuesta, throughput y comportamiento bajo carga. Se ejecutan pruebas de stress con hasta 50 usuarios concurrentes.</p>
+
+        <h4>3.1.3 Pruebas de seguridad y de acceso a datos</h4>
+        <p>Suite completa de pruebas de seguridad incluyendo inyección SQL, XSS, validación de autenticación y autorización.</p>
+
+        <h4>3.1.4 Herramientas involucradas</h4>
+        <table>
+            <tr>
+                <th>Herramienta</th>
+                <th>Vendedor/Fuente</th>
+                <th>Versión</th>
+            </tr>
+            <tr>
+                <td>Jest Testing Framework</td>
+                <td>Meta (Facebook)</td>
+                <td>30.0.2</td>
+            </tr>
+            <tr>
+                <td>Supertest</td>
+                <td>NPM Community</td>
+                <td>7.1.1</td>
+            </tr>
+            <tr>
+                <td>ExcelJS</td>
+                <td>NPM Community</td>
+                <td>4.4.0</td>
+            </tr>
+            <tr>
+                <td>Jest HTML Reporters</td>
+                <td>NPM Community</td>
+                <td>3.1.7</td>
+            </tr>
+            <tr>
+                <td>Node.js</td>
+                <td>Node.js Foundation</td>
+                <td>18.x+</td>
+            </tr>
+            <tr>
+                <td>PostgreSQL</td>
+                <td>PostgreSQL Global Development Group</td>
+                <td>13.x+</td>
+            </tr>
+        </table>
+
+        <div class="page-break"></div>
+
+        <h2>4. Recursos</h2>
+
+        <h3>4.1 Profesionales</h3>
+
+        <div class="resource-box">
+            <table>
+                <tr>
+                    <th>Rol</th>
+                    <th>Recursos mínimos recomendados</th>
+                    <th>Responsabilidades específicas</th>
+                </tr>
+                <tr>
+                    <td><strong>Diseñador de casos de prueba</strong></td>
+                    <td>1 persona full-time</td>
+                    <td>Identificar, priorizar e implementar los casos de prueba. Evaluar el esfuerzo de testing. Diseñar estrategias de validación.</td>
+                </tr>
+                <tr>
+                    <td><strong>Testeador</strong></td>
+                    <td>1 persona full-time</td>
+                    <td>Ejecutar los casos de prueba. Documentar resultados. Gestionar recuperación de errores. Generar reportes de defectos.</td>
+                </tr>
+                <tr>
+                    <td><strong>Administrador de sistema de pruebas</strong></td>
+                    <td>0.5 persona part-time</td>
+                    <td>Administrar el ambiente de pruebas. Instalar y configurar herramientas. Mantener acceso al sistema de pruebas.</td>
+                </tr>
+                <tr>
+                    <td><strong>Administrador de base de datos</strong></td>
+                    <td>0.5 persona part-time</td>
+                    <td>Administrar datos de prueba. Asegurar integridad y consistencia de datos. Mantener ambiente de BD de pruebas.</td>
+                </tr>
+                <tr>
+                    <td><strong>Desarrollador/Implementador</strong></td>
+                    <td>1 persona full-time</td>
+                    <td>Implementar correcciones de defectos. Mantener scripts de prueba automatizadas. Soporte técnico del sistema.</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>4.2 Ambiente de pruebas</h3>
+
+        <h4>4.2.1 Preparación del ambiente de pruebas</h4>
+        <p>El ambiente de pruebas debe replicar el ambiente de producción en configuración y datos. Se requiere un ambiente dedicado, seguro y estable exclusivamente para las pruebas del sistema.</p>
+
+        <h4>4.2.2 Diseño del ambiente de pruebas</h4>
+        <table>
+            <tr>
+                <th>ITEM</th>
+                <th>DESCRIPCIÓN</th>
+                <th>OBSERVACIONES</th>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>HARDWARE</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Servidor de Aplicación</strong></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Procesador</td>
+                <td>Intel Core i5 o superior / 4 cores</td>
+                <td>Para Node.js y procesamiento concurrente</td>
+            </tr>
+            <tr>
+                <td>Memoria RAM</td>
+                <td>8 GB mínimo (16 GB recomendado)</td>
+                <td>Para manejo de múltiples procesos</td>
+            </tr>
+            <tr>
+                <td>Espacio en Disco</td>
+                <td>100 GB SSD</td>
+                <td>Para aplicación, logs y datos de prueba</td>
+            </tr>
+            <tr>
+                <td><strong>Servidor de Base de Datos</strong></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Procesador</td>
+                <td>Intel Core i7 o superior / 8 cores</td>
+                <td>Para PostgreSQL y consultas complejas</td>
+            </tr>
+            <tr>
+                <td>Memoria RAM</td>
+                <td>16 GB mínimo</td>
+                <td>Para cache de BD y operaciones</td>
+            </tr>
+            <tr>
+                <td>Espacio en Disco</td>
+                <td>200 GB SSD</td>
+                <td>Para BD, backups y logs</td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>SOFTWARE</strong></td>
+            </tr>
+            <tr>
+                <td>Sistema Operativo</td>
+                <td>Ubuntu 20.04 LTS o CentOS 8</td>
+                <td>Ambiente Linux para producción</td>
+            </tr>
+            <tr>
+                <td>Node.js</td>
+                <td>v18.x LTS</td>
+                <td>Runtime de la aplicación</td>
+            </tr>
+            <tr>
+                <td>PostgreSQL</td>
+                <td>v13.x o superior</td>
+                <td>Base de datos principal</td>
+            </tr>
+            <tr>
+                <td>Herramientas de Testing</td>
+                <td>Jest, Supertest, ExcelJS</td>
+                <td>Suite de pruebas automatizadas</td>
+            </tr>
+        </table>
+
+        <div class="page-break"></div>
+
+        <h2>5. Actividades e Hitos del Plan de Pruebas</h2>
+
+        <table>
+            <tr>
+                <th>Tarea</th>
+                <th>Responsable</th>
+                <th>Esfuerzo (días)</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Término</th>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Plan de Pruebas</strong></td>
+            </tr>
+            <tr>
+                <td>Identificar el Proyecto</td>
+                <td>Diego Díaz</td>
+                <td>1</td>
+                <td>2025-01-20</td>
+                <td>2025-01-20</td>
+            </tr>
+            <tr>
+                <td>Definir Estrategia</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-01-21</td>
+                <td>2025-01-22</td>
+            </tr>
+            <tr>
+                <td>Documentar el "Plan de Pruebas"</td>
+                <td>Diego Díaz</td>
+                <td>3</td>
+                <td>2025-01-23</td>
+                <td>2025-01-25</td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Diseño de las Pruebas</strong></td>
+            </tr>
+            <tr>
+                <td>Analizar Requerimientos</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-01-26</td>
+                <td>2025-01-27</td>
+            </tr>
+            <tr>
+                <td>Especificar casos de prueba</td>
+                <td>Diego Díaz</td>
+                <td>5</td>
+                <td>2025-01-28</td>
+                <td>2025-02-01</td>
+            </tr>
+            <tr>
+                <td>Revisar Cobertura de requerimientos</td>
+                <td>Diego Díaz</td>
+                <td>1</td>
+                <td>2025-02-02</td>
+                <td>2025-02-02</td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Implementación de las Pruebas</strong></td>
+            </tr>
+            <tr>
+                <td>Establecer Ambiente de Implementación</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-02-03</td>
+                <td>2025-02-04</td>
+            </tr>
+            <tr>
+                <td>Desarrollar los Procedimientos de Prueba</td>
+                <td>Diego Díaz</td>
+                <td>7</td>
+                <td>2025-02-05</td>
+                <td>2025-02-11</td>
+            </tr>
+            <tr>
+                <td>Probar y depurar procedimientos</td>
+                <td>Diego Díaz</td>
+                <td>3</td>
+                <td>2025-02-12</td>
+                <td>2025-02-14</td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Ejecución de las pruebas</strong></td>
+            </tr>
+            <tr>
+                <td>Ejecutar pruebas funcionales</td>
+                <td>Diego Díaz</td>
+                <td>5</td>
+                <td>2025-02-15</td>
+                <td>2025-02-19</td>
+            </tr>
+            <tr>
+                <td>Ejecutar pruebas de seguridad</td>
+                <td>Diego Díaz</td>
+                <td>3</td>
+                <td>2025-02-20</td>
+                <td>2025-02-22</td>
+            </tr>
+            <tr>
+                <td>Ejecutar pruebas de performance</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-02-23</td>
+                <td>2025-02-24</td>
+            </tr>
+            <tr>
+                <td>Registrar defectos y resultados</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-02-25</td>
+                <td>2025-02-26</td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Evaluación de las pruebas</strong></td>
+            </tr>
+            <tr>
+                <td>Evaluar cobertura de casos de prueba</td>
+                <td>Diego Díaz</td>
+                <td>1</td>
+                <td>2025-02-27</td>
+                <td>2025-02-27</td>
+            </tr>
+            <tr>
+                <td>Reportar defectos y generar informes</td>
+                <td>Diego Díaz</td>
+                <td>2</td>
+                <td>2025-02-28</td>
+                <td>2025-03-01</td>
+            </tr>
+        </table>
+
+        <div class="page-break"></div>
+
+        <h2>6. Entregables</h2>
+
+        <h3>6.1 Plan de pruebas</h3>
+        <p>Este documento constituye el plan maestro de pruebas que será distribuido a todos los stakeholders del proyecto.</p>
+
+        <h4>6.1.1 Criterio de entrada para el "Plan de pruebas"</h4>
+        <ul>
+            <li>Ambiente de pruebas configurado y funcional</li>
+            <li>Base de datos de pruebas con datos representativos</li>
+            <li>Código fuente estable y deployado en ambiente de pruebas</li>
+            <li>Herramientas de testing instaladas y configuradas</li>
+        </ul>
+
+        <h4>6.1.2 Criterio de salida para el "Plan de pruebas"</h4>
+        <ul>
+            <li>Ejecución exitosa del 100% de casos de prueba planificados</li>
+            <li>Cobertura de código superior al 80%</li>
+            <li>Todos los defectos críticos y altos resueltos</li>
+            <li>Defectos medios y bajos documentados y priorizados</li>
+            <li>Pruebas de performance dentro de parámetros aceptables</li>
+            <li>Pruebas de seguridad sin vulnerabilidades críticas</li>
+        </ul>
+
+        <h4>6.1.3 Criterio de suspensión y resumisión</h4>
+        <p><strong>Suspensión:</strong> Se suspenderán las pruebas si se detectan más de 5 defectos críticos o si el ambiente de pruebas presenta inestabilidad mayor al 20% del tiempo.</p>
+        <p><strong>Resumisión:</strong> Las pruebas se reanudarán cuando todos los defectos críticos sean corregidos y el ambiente de pruebas sea estable por al menos 24 horas continuas.</p>
+
+        <h3>6.2 Resultados de las pruebas</h3>
+        <p>Los resultados se registrarán y reportarán utilizando:</p>
+        <ul>
+            <li>Reportes HTML generados por Jest</li>
+            <li>Reportes Excel con métricas detalladas</li>
+            <li>Dashboard de cobertura de código</li>
+            <li>Logs detallados de ejecución de pruebas</li>
+        </ul>
+
+        <h3>6.3 Reporte de defectos</h3>
+        <p>Los defectos se registrarán con la siguiente información:</p>
+        <ul>
+            <li>ID único del defecto</li>
+            <li>Severidad (Crítica, Alta, Media, Baja)</li>
+            <li>Descripción detallada</li>
+            <li>Pasos para reproducir</li>
+            <li>Resultado esperado vs resultado actual</li>
+            <li>Capturas de pantalla o logs relevantes</li>
+        </ul>
+
+        <div class="page-break"></div>
+
+        <h2>7. Anexos</h2>
+
+        <h3>7.1 A: Tareas del proyecto</h3>
+        <p>Lista completa de tareas relacionadas con el Plan de pruebas:</p>
+        <ul>
+            <li>Diseño e implementación de 23 casos de prueba principales</li>
+            <li>Desarrollo de más de 500 validaciones individuales</li>
+            <li>Configuración de ambiente de pruebas automatizadas</li>
+            <li>Implementación de pruebas de seguridad (SQL Injection, XSS)</li>
+            <li>Desarrollo de pruebas de performance y stress</li>
+            <li>Creación de generadores de reportes Excel automatizados</li>
+            <li>Configuración de Jest con cobertura de código</li>
+            <li>Implementación de secuenciador personalizado de pruebas</li>
+        </ul>
+
+        <h3>7.2 B: Pruebas de rendimiento (performance)</h3>
+        <table>
+            <tr>
+                <th>Aspecto</th>
+                <th>Descripción</th>
+            </tr>
+            <tr>
+                <td><strong>Objetivo de la prueba:</strong></td>
+                <td>Comprobar tiempos de respuesta, throughput y comportamiento bajo carga normal y de stress. Validar que el sistema mantenga performance aceptable con hasta 50 usuarios concurrentes.</td>
+            </tr>
+            <tr>
+                <td><strong>Técnica a usar:</strong></td>
+                <td>Ejecutar pruebas automatizadas con Jest que simulen múltiples usuarios concurrentes. Medir tiempos de respuesta para cada endpoint. Monitorear uso de memoria y CPU.</td>
+            </tr>
+            <tr>
+                <td><strong>Criterio de validación:</strong></td>
+                <td>Tiempo de respuesta promedio &lt; 2 segundos. Degradación de performance &lt; 20% bajo carga. Sin memory leaks detectados.</td>
+            </tr>
+            <tr>
+                <td><strong>Consideraciones especiales:</strong></td>
+                <td>Pruebas deben ejecutarse en ambiente dedicado. Base de datos debe contener volumen representativo de datos de producción.</td>
+            </tr>
+        </table>
+
+        <h3>7.3 C: Pruebas de seguridad y de control de acceso</h3>
+        <table>
+            <tr>
+                <th>Aspecto</th>
+                <th>Descripción</th>
+            </tr>
+            <tr>
+                <td><strong>Objetivo de la prueba:</strong></td>
+                <td>Verificar resistencia a ataques de inyección SQL, XSS, y validar correcta implementación de autenticación y autorización. Asegurar que solo usuarios autorizados accedan a funcionalidades específicas.</td>
+            </tr>
+            <tr>
+                <td><strong>Técnica a usar:</strong></td>
+                <td>Ejecutar suite de 100+ pruebas de seguridad incluyendo payloads maliciosos, validación de tokens JWT, pruebas de autorización por roles, y verificación de sanitización de inputs.</td>
+            </tr>
+            <tr>
+                <td><strong>Criterio de validación:</strong></td>
+                <td>Cero vulnerabilidades críticas o altas. Correcta validación y sanitización de todos los inputs. Autenticación y autorización funcionando según especificaciones.</td>
+            </tr>
+            <tr>
+                <td><strong>Consideraciones especiales:</strong></td>
+                <td>Pruebas deben incluir vectores de ataque actualizados según OWASP Top 10. Validación especial para integración con Transbank.</td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            <p><strong>Sistema de E-commerce Ferremas - Plan de Pruebas de Software</strong></p>
+            <p>Documento elaborado por: Diego Díaz | Fecha: 24/01/2025 | Versión: 1.0.0</p>
+        </div>
+    </div>
+</body>
+</html> 

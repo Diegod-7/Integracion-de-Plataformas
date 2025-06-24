@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Implantación - Sistema de E-commerce Ferremas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        h2 {
+            color: #4a5568;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 8px;
+            margin-top: 35px;
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #2d3748;
+            margin-top: 25px;
+            font-size: 1.4em;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        h4 {
+            color: #4a5568;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .project-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+        .version-control {
+            background: #f8f9fa;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+        }
+        tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+        tr:hover td {
+            background-color: #e3f2fd;
+        }
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        .toc h3 {
+            color: #667eea;
+            border: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc ul ul {
+            padding-left: 25px;
+            margin-top: 8px;
+        }
+        .toc li {
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        .toc a:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+        .activity-box {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .risk-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .resource-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .objective-list {
+            background: #f0f8ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .objective-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .objective-list li {
+            margin: 8px 0;
+            color: #2d3748;
+        }
+        .timeline {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            background: #2d3748;
+            color: white;
+            border-radius: 8px;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-align: center;
+        }
+        .status-high { background: #ffebee; color: #c62828; }
+        .status-medium { background: #fff3e0; color: #ef6c00; }
+        .status-low { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Plan de Implantación</h1>
+            <div class="project-info">
+                <h2 style="color: white; border: none; margin: 0;">Sistema de E-commerce Ferremas</h2>
+                <p style="margin: 10px 0 0 0; font-size: 1.2em;"><strong>Fecha:</strong> 23/06/2025</p>
+            </div>
+        </div>
+
+        <div class="version-control">
+            <h3>Control de Versiones</h3>
+            <table>
+                <tr>
+                    <th>Versión</th>
+                    <th>Autor</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                </tr>
+                <tr>
+                    <td>1.0</td>
+                    <td>Diego Díaz</td>
+                    <td>Creación del Plan de Implantación inicial</td>
+                    <td>23/06/2025</td>
+                </tr>
+                <tr>
+                    <td>1.1</td>
+                    <td>Diego Díaz</td>
+                    <td>Revisión y ajustes de cronograma</td>
+                    <td>25/06/2025</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="toc">
+            <h3>Contenido</h3>
+            <ul>
+                <li><a href="#introduccion">1. Introducción</a></li>
+                <li><a href="#objetivos">2. Definición de objetivos del plan de implantación</a>
+                    <ul>
+                        <li><a href="#objetivo-general">2.1. Objetivo General</a></li>
+                        <li><a href="#objetivos-especificos">2.2. Objetivos Específicos</a></li>
+                    </ul>
+                </li>
+                <li><a href="#actividades">3. Definición de actividades del plan de implantación</a>
+                    <ul>
+                        <li><a href="#contratacion">3.1. Contratación del Personal del Proyecto</a></li>
+                        <li><a href="#difusion">3.2. Difusión de Propuesta en la Empresa</a></li>
+                        <li><a href="#adquisicion">3.3. Adquisición de Equipo y materiales</a></li>
+                        <li><a href="#capacitacion">3.4. Capacitación</a></li>
+                        <li><a href="#entrega-preliminar">3.5. Entrega Preliminar De Sistema</a></li>
+                        <li><a href="#prueba-preliminar">3.6. Prueba Preliminar</a></li>
+                        <li><a href="#retroalimentacion">3.7. Retroalimentación de las Pruebas</a></li>
+                        <li><a href="#liberacion">3.8. Liberación de Recursos y Entrega</a></li>
+                    </ul>
+                </li>
+                <li><a href="#programacion">4. Programación de Actividades</a></li>
+                <li><a href="#metodo">5. Método de implantación</a></li>
+                <li><a href="#documentacion">6. Elaboración de documentación técnica</a></li>
+                <li><a href="#programa-capacitacion">7. Formulación del programa para la capacitación</a></li>
+                <li><a href="#recursos">8. Determinación de las necesidades de recursos</a></li>
+            </ul>
+        </div>
+
+        <div class="page-break"></div>
+
+        <section id="introduccion">
+            <h2>1. Introducción</h2>
+            <p>El presente documento establece el <strong>Plan de Implantación</strong> para el <span class="highlight">Sistema de E-commerce Ferremas</span>, una plataforma integral de comercio electrónico desarrollada con tecnologías modernas como Node.js, Express.js, PostgreSQL y integración con Transbank para procesamiento de pagos.</p>
+            
+            <p>Este plan define la estrategia, metodología, recursos y cronograma necesarios para la implementación exitosa del sistema en el ambiente de producción de Ferremas, garantizando una transición fluida desde el ambiente de desarrollo hasta la operación completa del sistema.</p>
+
+            <p>La implantación contempla todas las fases críticas desde la preparación del ambiente de producción, capacitación del personal, migración de datos, hasta la puesta en marcha y estabilización del sistema, asegurando la continuidad del negocio y la satisfacción de los usuarios finales.</p>
+        </section>
+
+        <section id="objetivos">
+            <h2>2. Definición de objetivos del plan de implantación</h2>
+            
+            <h3 id="objetivo-general">2.1. Objetivo General</h3>
+            <div class="objective-list">
+                <p><strong>Implementar exitosamente el Sistema de E-commerce Ferremas en el ambiente de producción, garantizando la operatividad completa de todas las funcionalidades del sistema, la integración efectiva con los sistemas existentes y la adopción satisfactoria por parte de los usuarios finales, dentro del cronograma establecido y con los recursos asignados.</strong></p>
+            </div>
+
+            <h3 id="objetivos-especificos">2.2. Objetivos Específicos</h3>
+            <div class="objective-list">
+                <ul>
+                    <li>Definir y ejecutar las actividades necesarias para la implantación del Sistema de E-commerce Ferremas</li>
+                    <li>Establecer el ambiente de producción con la infraestructura tecnológica requerida</li>
+                    <li>Capacitar al personal técnico y usuarios finales en el uso del sistema</li>
+                    <li>Migrar los datos existentes al nuevo sistema manteniendo la integridad de la información</li>
+                    <li>Integrar el sistema con Transbank para el procesamiento seguro de pagos</li>
+                    <li>Implementar las medidas de seguridad y respaldo necesarias</li>
+                    <li>Ejecutar pruebas integrales en ambiente de producción</li>
+                    <li>Establecer procedimientos de monitoreo y mantenimiento del sistema</li>
+                    <li>Garantizar la continuidad del negocio durante la transición</li>
+                    <li>Documentar todos los procesos y procedimientos de operación</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="actividades">
+            <h2>3. Definición de actividades del plan de implantación</h2>
+
+            <div class="activity-box">
+                <h3>Actividades Generales</h3>
+                <p>Esta etapa de planificación de la implantación es el punto inicial, donde se define lo que se realizará a lo largo de la implementación del Sistema de E-commerce Ferremas. Las actividades están organizadas en fases secuenciales que garantizan una implementación ordenada y controlada.</p>
+            </div>
+
+            <h3 id="contratacion">3.1. Contratación del Personal del Proyecto</h3>
+            <p>Esta etapa incluye la definición y contratación del <strong>Administrador del Sistema</strong> y el equipo técnico especializado, quienes serán responsables de planificar, organizar y controlar el proyecto de implantación. El equipo incluirá:</p>
+            <ul>
+                <li><strong>Jefe de Proyecto:</strong> Diego Díaz - Responsable general de la implantación</li>
+                <li><strong>Administrador de Sistemas:</strong> Especialista en infraestructura y servidores</li>
+                <li><strong>Desarrollador Senior:</strong> Soporte técnico y personalización del sistema</li>
+                <li><strong>Especialista en Base de Datos:</strong> Migración y optimización de datos</li>
+                <li><strong>Analista de Seguridad:</strong> Implementación de medidas de seguridad</li>
+            </ul>
+
+            <h3 id="difusion">3.2. Difusión de Propuesta en la Empresa</h3>
+            <p>Esta actividad consiste en concientizar al personal involucrado acerca de:</p>
+            <ul>
+                <li>Las ventajas y beneficios del nuevo Sistema de E-commerce</li>
+                <li>El impacto positivo en la productividad y eficiencia</li>
+                <li>Los cambios en los procesos de trabajo</li>
+                <li>El cronograma de implementación y capacitación</li>
+                <li>El correcto uso de los recursos informáticos implementados</li>
+            </ul>
+
+            <h3 id="adquisicion">3.3. Adquisición de Equipo y materiales</h3>
+            <p>El Administrador del Sistema será el encargado de realizar esta actividad que incluye:</p>
+            <ul>
+                <li>Servidores de producción con especificaciones requeridas</li>
+                <li>Licencias de software (PostgreSQL Enterprise, certificados SSL)</li>
+                <li>Equipos de respaldo y almacenamiento</li>
+                <li>Infraestructura de red y seguridad</li>
+                <li>Herramientas de monitoreo y administración</li>
+            </ul>
+
+            <h3 id="capacitacion">3.4. Capacitación</h3>
+            <p>Programa integral de capacitación que incluye:</p>
+            <ul>
+                <li><strong>Personal Técnico:</strong> Administración del sistema, base de datos, seguridad</li>
+                <li><strong>Personal Administrativo:</strong> Gestión de productos, órdenes, reportes</li>
+                <li><strong>Personal de Ventas:</strong> Uso de la plataforma, atención al cliente</li>
+                <li><strong>Gerencia:</strong> Dashboard ejecutivo, métricas y KPIs</li>
+            </ul>
+
+            <h3 id="entrega-preliminar">3.5. Entrega Preliminar De Sistema</h3>
+            <p>Entrega de la primera versión funcional del sistema en ambiente de pre-producción para:</p>
+            <ul>
+                <li>Validación de funcionalidades por parte de usuarios clave</li>
+                <li>Pruebas de integración con sistemas existentes</li>
+                <li>Verificación de rendimiento y estabilidad</li>
+                <li>Ajustes finales antes de la implementación en producción</li>
+            </ul>
+
+            <h3 id="prueba-preliminar">3.6. Prueba Preliminar</h3>
+            <p>Esta actividad comprende la puesta en marcha del sistema en ambiente controlado:</p>
+            <ul>
+                <li>Pruebas de funcionalidad completa</li>
+                <li>Pruebas de integración con Transbank</li>
+                <li>Pruebas de carga y rendimiento</li>
+                <li>Pruebas de seguridad y vulnerabilidades</li>
+                <li>Pruebas de respaldo y recuperación</li>
+            </ul>
+
+            <h3 id="retroalimentacion">3.7. Retroalimentación de las Pruebas Preliminares</h3>
+            <p>Proceso de recopilación y análisis de resultados:</p>
+            <ul>
+                <li>Documentación de defectos encontrados</li>
+                <li>Priorización de correcciones</li>
+                <li>Implementación de mejoras</li>
+                <li>Validación de correcciones</li>
+                <li>Aprobación final para producción</li>
+            </ul>
+
+            <h3 id="liberacion">3.8. Liberación de Recursos y Entrega del Proyecto</h3>
+            <p>Etapa final que incluye:</p>
+            <ul>
+                <li>Migración completa a ambiente de producción</li>
+                <li>Liberación de recursos de desarrollo</li>
+                <li>Inicio de "marcha blanca" del sistema</li>
+                <li>Transferencia de conocimiento al equipo de soporte</li>
+                <li>Documentación final y cierre del proyecto</li>
+            </ul>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section id="programacion">
+            <h2>4. Programación de Actividades del Plan de Implantación</h2>
+
+            <h3>4.1. Cuadro de Actividades del Plan de Implantación</h3>
+            <p>Se señala el tiempo promedio que demorará cada actividad dentro de la implementación:</p>
+
+            <table>
+                <tr>
+                    <th>No.</th>
+                    <th>Actividad</th>
+                    <th>Tiempo (días)</th>
+                    <th>Efectividad Predecesora</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Contratación del Personal del Proyecto</td>
+                    <td>7</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Difusión de la propuesta en la empresa</td>
+                    <td>5</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Adquisición de equipo y materiales</td>
+                    <td>14</td>
+                    <td>A</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Preparación del ambiente de producción</td>
+                    <td>10</td>
+                    <td>C</td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Instalación y configuración del sistema</td>
+                    <td>8</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Migración de datos</td>
+                    <td>6</td>
+                    <td>E</td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Integración con Transbank</td>
+                    <td>5</td>
+                    <td>E</td>
+                </tr>
+                <tr>
+                    <td>H</td>
+                    <td>Capacitación del personal</td>
+                    <td>12</td>
+                    <td>B, F</td>
+                </tr>
+                <tr>
+                    <td>I</td>
+                    <td>Pruebas preliminares</td>
+                    <td>10</td>
+                    <td>F, G, H</td>
+                </tr>
+                <tr>
+                    <td>J</td>
+                    <td>Retroalimentación y ajustes</td>
+                    <td>7</td>
+                    <td>I</td>
+                </tr>
+                <tr>
+                    <td>K</td>
+                    <td>Puesta en producción</td>
+                    <td>3</td>
+                    <td>J</td>
+                </tr>
+                <tr>
+                    <td>L</td>
+                    <td>Marcha blanca y estabilización</td>
+                    <td>15</td>
+                    <td>K</td>
+                </tr>
+            </table>
+
+            <div class="timeline">
+                <strong>Duración Total del Proyecto: 87 días hábiles (aproximadamente 4 meses)</strong>
+            </div>
+
+            <h3>4.2. Cronograma de Actividades</h3>
+            <table>
+                <tr>
+                    <th>Actividad</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Responsable</th>
+                </tr>
+                <tr>
+                    <td>Contratación del Personal</td>
+                    <td>24/06/2025</td>
+                    <td>02/07/2025</td>
+                    <td>Diego Díaz</td>
+                </tr>
+                <tr>
+                    <td>Difusión de propuesta</td>
+                    <td>24/06/2025</td>
+                    <td>30/06/2025</td>
+                    <td>Diego Díaz</td>
+                </tr>
+                <tr>
+                    <td>Adquisición de equipos</td>
+                    <td>03/07/2025</td>
+                    <td>22/07/2025</td>
+                    <td>Administrador de Sistemas</td>
+                </tr>
+                <tr>
+                    <td>Preparación ambiente</td>
+                    <td>23/07/2025</td>
+                    <td>05/08/2025</td>
+                    <td>Administrador de Sistemas</td>
+                </tr>
+                <tr>
+                    <td>Instalación sistema</td>
+                    <td>06/08/2025</td>
+                    <td>15/08/2025</td>
+                    <td>Desarrollador Senior</td>
+                </tr>
+                <tr>
+                    <td>Migración de datos</td>
+                    <td>16/08/2025</td>
+                    <td>23/08/2025</td>
+                    <td>Especialista BD</td>
+                </tr>
+                <tr>
+                    <td>Integración Transbank</td>
+                    <td>16/08/2025</td>
+                    <td>22/08/2025</td>
+                    <td>Desarrollador Senior</td>
+                </tr>
+                <tr>
+                    <td>Capacitación personal</td>
+                    <td>01/07/2025</td>
+                    <td>16/07/2025</td>
+                    <td>Diego Díaz</td>
+                </tr>
+                <tr>
+                    <td>Pruebas preliminares</td>
+                    <td>26/08/2025</td>
+                    <td>08/09/2025</td>
+                    <td>Equipo completo</td>
+                </tr>
+                <tr>
+                    <td>Ajustes finales</td>
+                    <td>09/09/2025</td>
+                    <td>17/09/2025</td>
+                    <td>Desarrollador Senior</td>
+                </tr>
+                <tr>
+                    <td>Puesta en producción</td>
+                    <td>18/09/2025</td>
+                    <td>22/09/2025</td>
+                    <td>Diego Díaz</td>
+                </tr>
+                <tr>
+                    <td>Marcha blanca</td>
+                    <td>23/09/2025</td>
+                    <td>15/10/2025</td>
+                    <td>Equipo completo</td>
+                </tr>
+            </table>
+
+            <h3>4.3. Matriz de Responsabilidad</h3>
+            <table>
+                <tr>
+                    <th>No.</th>
+                    <th>Actividades</th>
+                    <th>Jefe Proyecto</th>
+                    <th>Admin. Sistemas</th>
+                    <th>Desarrollador</th>
+                    <th>Especialista BD</th>
+                    <th>Gerencia</th>
+                    <th>Usuarios</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Contratación del Proyecto</td>
+                    <td>R</td>
+                    <td>S</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>S</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Adquisición de equipos</td>
+                    <td>S</td>
+                    <td>R</td>
+                    <td>S</td>
+                    <td>-</td>
+                    <td>S</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Instalación del sistema</td>
+                    <td>S</td>
+                    <td>S</td>
+                    <td>R</td>
+                    <td>S</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Migración de datos</td>
+                    <td>S</td>
+                    <td>S</td>
+                    <td>S</td>
+                    <td>R</td>
+                    <td>-</td>
+                    <td>O</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Capacitación</td>
+                    <td>R</td>
+                    <td>S</td>
+                    <td>S</td>
+                    <td>-</td>
+                    <td>S</td>
+                    <td>O</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Pruebas del sistema</td>
+                    <td>R</td>
+                    <td>O</td>
+                    <td>O</td>
+                    <td>O</td>
+                    <td>S</td>
+                    <td>O</td>
+                </tr>
+            </table>
+            <p><strong>CLAVE:</strong> R = Responsabilidad Principal; S = Responsabilidad de Apoyo; O = Responsabilidad de Operación</p>
+
+            <h3>4.4. Análisis de riesgos</h3>
+            <div class="risk-box">
+                <p>Para que el plan de implantación se desarrolle de la mejor manera es primordial tener claridad respecto de los posibles riesgos:</p>
+                
+                <table>
+                    <tr>
+                        <th>Nº</th>
+                        <th>Riesgo</th>
+                        <th>Probabilidad</th>
+                        <th>Impacto</th>
+                        <th>Estrategia</th>
+                        <th>Responsable</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Fallas en integración con Transbank</td>
+                        <td><span class="status-badge status-medium">Media</span></td>
+                        <td><span class="status-badge status-high">Alto</span></td>
+                        <td>Pruebas exhaustivas en sandbox, contacto directo con soporte Transbank</td>
+                        <td>Desarrollador Senior</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Demora en adquisición de equipos</td>
+                        <td><span class="status-badge status-medium">Media</span></td>
+                        <td><span class="status-badge status-medium">Medio</span></td>
+                        <td>Proveedores alternativos, compras anticipadas</td>
+                        <td>Admin. Sistemas</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Resistencia al cambio del personal</td>
+                        <td><span class="status-badge status-high">Alta</span></td>
+                        <td><span class="status-badge status-medium">Medio</span></td>
+                        <td>Programa de comunicación y capacitación intensiva</td>
+                        <td>Diego Díaz</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Pérdida de datos durante migración</td>
+                        <td><span class="status-badge status-low">Baja</span></td>
+                        <td><span class="status-badge status-high">Alto</span></td>
+                        <td>Múltiples respaldos, pruebas de migración, rollback plan</td>
+                        <td>Especialista BD</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Problemas de rendimiento en producción</td>
+                        <td><span class="status-badge status-medium">Media</span></td>
+                        <td><span class="status-badge status-high">Alto</span></td>
+                        <td>Pruebas de carga, monitoreo continuo, escalamiento automático</td>
+                        <td>Admin. Sistemas</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>4.5. Plan de contingencia</h3>
+            <div class="risk-box">
+                <p>En caso de que la implementación falle en alguna de sus etapas, se ejecutarán las siguientes actividades de contingencia:</p>
+                <ul>
+                    <li><strong>Rollback inmediato:</strong> Restauración del sistema anterior desde respaldos completos</li>
+                    <li><strong>Comunicación de crisis:</strong> Notificación inmediata a stakeholders y usuarios</li>
+                    <li><strong>Análisis de causa raíz:</strong> Identificación y documentación del problema</li>
+                    <li><strong>Plan de recuperación:</strong> Cronograma revisado para nueva implementación</li>
+                    <li><strong>Mitigación de impacto:</strong> Procedimientos manuales temporales si es necesario</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <section id="metodo">
+            <h2>5. Método de implantación</h2>
+            <p>Se adoptará un método de implantación <strong>gradual y controlado</strong> con las siguientes etapas:</p>
+            <ol>
+                <li><strong>Preparación del ambiente:</strong> Configuración completa de infraestructura</li>
+                <li><strong>Instalación base:</strong> Despliegue del sistema core</li>
+                <li><strong>Integración de módulos:</strong> Implementación secuencial de funcionalidades</li>
+                <li><strong>Migración de datos:</strong> Transferencia controlada de información</li>
+                <li><strong>Pruebas integrales:</strong> Validación completa del sistema</li>
+                <li><strong>Capacitación intensiva:</strong> Preparación de usuarios</li>
+                <li><strong>Marcha blanca:</strong> Operación paralela controlada</li>
+                <li><strong>Puesta en producción:</strong> Transición completa al nuevo sistema</li>
+            </ol>
+        </section>
+
+        <section id="documentacion">
+            <h2>6. Elaboración de documentación técnica de apoyo</h2>
+            <p>La documentación técnica estará constituida por los siguientes informes:</p>
+            
+            <h3>6.1. Documentos de Avances</h3>
+            <ul>
+                <li>Reportes semanales de progreso</li>
+                <li>Informes de hitos completados</li>
+                <li>Documentación de incidencias y resoluciones</li>
+                <li>Métricas de avance del proyecto</li>
+            </ul>
+
+            <h3>6.2. Informe final</h3>
+            <ul>
+                <li>Manual de usuario final</li>
+                <li>Manual técnico de administración</li>
+                <li>Procedimientos de operación y mantenimiento</li>
+                <li>Documentación de arquitectura del sistema</li>
+                <li>Plan de respaldo y recuperación</li>
+            </ul>
+        </section>
+
+        <section id="programa-capacitacion">
+            <h2>7. Formulación del programa para la capacitación</h2>
+
+            <h3>7.1. Tiempo</h3>
+            <p><strong>Duración total:</strong> 12 días hábiles distribuidos en 3 semanas</p>
+
+            <h3>7.2. Encargados y Facilitadores</h3>
+            <ul>
+                <li><strong>Coordinador General:</strong> Diego Díaz</li>
+                <li><strong>Instructor Técnico:</strong> Desarrollador Senior</li>
+                <li><strong>Instructor Funcional:</strong> Analista de Sistemas</li>
+                <li><strong>Soporte Técnico:</strong> Administrador de Sistemas</li>
+            </ul>
+
+            <h3>7.3. Material y Equipo</h3>
+            <ul>
+                <li>Manuales de usuario impresos y digitales</li>
+                <li>Videos tutoriales interactivos</li>
+                <li>Ambiente de práctica dedicado</li>
+                <li>Casos de estudio reales</li>
+            </ul>
+
+            <h3>7.4. Grupos de Trabajo</h3>
+            <ul>
+                <li><strong>Grupo A:</strong> Personal administrativo y gerencial (8 personas)</li>
+                <li><strong>Grupo B:</strong> Personal de ventas y atención al cliente (12 personas)</li>
+                <li><strong>Grupo C:</strong> Personal técnico y soporte (4 personas)</li>
+            </ul>
+
+            <h3>7.5. Temática</h3>
+            <ul>
+                <li>Introducción al Sistema de E-commerce</li>
+                <li>Gestión de productos y categorías</li>
+                <li>Procesamiento de órdenes y pagos</li>
+                <li>Administración de usuarios y clientes</li>
+                <li>Reportes y métricas de negocio</li>
+                <li>Procedimientos de seguridad</li>
+            </ul>
+
+            <h3>7.6. Plan de evaluación</h3>
+            <ul>
+                <li>Evaluaciones prácticas por módulo</li>
+                <li>Examen final teórico-práctico</li>
+                <li>Certificación de competencias</li>
+                <li>Seguimiento post-capacitación</li>
+            </ul>
+        </section>
+
+        <section id="recursos">
+            <h2>8. Determinación de las necesidades de recursos para la implantación</h2>
+
+            <h3>8.1. Recurso Humano</h3>
+            <div class="resource-box">
+                <table>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nombre del puesto</th>
+                        <th>Cantidad</th>
+                        <th>Jefe inmediato</th>
+                        <th>Perfil</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Jefe de Proyecto</td>
+                        <td>1</td>
+                        <td>Gerencia General</td>
+                        <td>Ingeniero en Informática, 5+ años experiencia en proyectos, certificación PMP deseable</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Administrador de Sistemas</td>
+                        <td>1</td>
+                        <td>Jefe de Proyecto</td>
+                        <td>Ingeniero en Sistemas, experiencia en Linux, PostgreSQL, Node.js</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Desarrollador Senior</td>
+                        <td>1</td>
+                        <td>Jefe de Proyecto</td>
+                        <td>Ingeniero en Software, 3+ años JavaScript/Node.js, experiencia e-commerce</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Especialista en Base de Datos</td>
+                        <td>1</td>
+                        <td>Admin. Sistemas</td>
+                        <td>Técnico/Ingeniero, especialización PostgreSQL, experiencia migración datos</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Analista de Seguridad</td>
+                        <td>1</td>
+                        <td>Jefe de Proyecto</td>
+                        <td>Especialista en seguridad informática, certificaciones de seguridad</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>8.2. Recurso material y tecnológico</h3>
+            <div class="resource-box">
+                <table>
+                    <tr>
+                        <th>No.</th>
+                        <th>Recurso</th>
+                        <th>Cantidad</th>
+                        <th colspan="3">Disponibilidad</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Técnicos</th>
+                        <th>Gerencia</th>
+                        <th>Usuarios</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Servidores de Producción</td>
+                        <td>3</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>NO</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Proyector multimedia</td>
+                        <td>2</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Laptops para capacitación</td>
+                        <td>15</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Impresora Laser</td>
+                        <td>2</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Conexión a Red (Gbps)</td>
+                        <td>1</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Sistema de Respaldo</td>
+                        <td>1</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>NO</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Licencias PostgreSQL</td>
+                        <td>3</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>NO</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Certificados SSL</td>
+                        <td>2</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>NO</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Manuales de usuario</td>
+                        <td>25</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>Material de capacitación</td>
+                        <td>25</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                        <td>SI</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <div class="footer">
+            <p><strong>Sistema de E-commerce Ferremas - Plan de Implantación</strong></p>
+            <p>Documento elaborado por: Diego Díaz | Fecha: 23/06/2025 | Versión: 1.0</p>
+            <p>Duración estimada del proyecto: 87 días hábiles | Fecha estimada de finalización: 15/10/2025</p>
+        </div>
+    </div>
+</body>
+</html> 

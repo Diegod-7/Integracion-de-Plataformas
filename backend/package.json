@@ -6,7 +6,28 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:auth": "jest tests/auth.test.js",
+    "test:products": "jest tests/products.test.js",
+    "test:newsletter": "jest tests/newsletter.test.js",
+    "test:webpay": "jest tests/webpay.test.js",
+    "test:security": "jest tests/security.test.js",
+    "test:performance": "jest tests/performance.test.js",
+    "test:integration": "jest tests/integration.test.js",
+    "test:api-validation": "jest tests/api-validation.test.js",
+    "test:stress": "jest tests/stress-testing.test.js --runInBand --maxWorkers=1",
+    "test:basic": "jest tests/auth.test.js tests/products.test.js tests/newsletter.test.js tests/webpay.test.js",
+    "test:advanced": "jest tests/security.test.js tests/performance.test.js tests/integration.test.js tests/api-validation.test.js",
+    "test:all-extended": "jest --runInBand",
+    "generate-excel": "node tests/excel-generator.js",
+    "generate-excel-improved": "node tests/excel-generator-improved.js",
+    "generate-excel-professional": "node tests/excel-generator-professional.js",
+    "test-and-report": "node tests/run-tests-and-generate-report.js",
+    "show-summary": "node tests/show-summary.js",
+    "test:quick": "jest --testPathIgnorePatterns=stress-testing.test.js performance.test.js",
+    "test:ci": "jest --coverage --runInBand --testPathIgnorePatterns=stress-testing.test.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +44,11 @@
     "transbank-sdk": "^5.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "exceljs": "^4.4.0",
+    "jest": "^30.0.2",
+    "jest-html-reporters": "^3.1.7",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.1",
+    "xlsx": "^0.18.5"
   }
 }

@@ -5,6 +5,7 @@ export interface User {
   password?: string;
   role?: string;
   discountPercentage?: number;
+  token?: string;
 }
 
 export interface LoginRequest {

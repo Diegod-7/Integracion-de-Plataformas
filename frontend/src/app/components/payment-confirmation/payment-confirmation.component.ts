@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -6,6 +6,8 @@ import { CurrencyService } from '../../services/currency.service';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { Order, OrderDetail } from '../../models/order.model';
+import { take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 interface WebpayResult {
   buyOrder: string;
@@ -48,11 +50,12 @@ interface WebpayResult {
     }
   `]
 })
-export class PaymentConfirmationComponent implements OnInit {
+export class PaymentConfirmationComponent implements OnInit, OnDestroy {
   paymentResult: WebpayResult | null = null;
   loading: boolean = true;
   error: string | null = null;
   orderSuccess: boolean = false;
+  private queryParamsSub: Subscription | null = null;
 
   constructor(
     private http: HttpClient,
@@ -65,7 +68,7 @@ export class PaymentConfirmationComponent implements OnInit {
 
   ngOnInit() {
     // Obtener los parámetros de la URL
-    this.route.queryParams.subscribe(params => {
+    this.queryParamsSub = this.route.queryParams.subscribe(params => {
       const token_ws = params['token_ws'];
       
       if (!token_ws) {
@@ -76,6 +79,7 @@ export class PaymentConfirmationComponent implements OnInit {
       
       // Confirmar la transacción con el backend
       this.http.post<WebpayResult>('http://localhost:3000/api/webpay/confirm', { token_ws })
+        .pipe(take(1))
         .subscribe({
           next: (result) => {
             console.log('Resultado del pago:', result);
@@ -98,13 +102,22 @@ export class PaymentConfirmationComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    // Cancelar todas las suscripciones pendientes
+    if (this.queryParamsSub) {
+      this.queryParamsSub.unsubscribe();
+    }
+  }
+
   // Reemplazamos el método saveOrder con una simulación
   simulateSaveOrder(paymentResult: WebpayResult): void {
-    // Generar un ID único para la orden basado en la fecha y un valor aleatorio
-    const orderId = Date.now() + Math.floor(Math.random() * 1000);
-    
-    // Obtener los productos del carrito antes de vaciarlo
-    this.cartService.getItems().subscribe(cartItems => {
+    try {
+      // Generar un ID único para la orden basado en la fecha y un valor aleatorio
+      const orderId = Date.now() + Math.floor(Math.random() * 1000);
+      
+      // Obtener los productos del carrito de manera sincrónica
+      const cartItems = this.cartService.getItemsSync();
+      
       // Crear los detalles de la orden desde los items del carrito
       const orderDetails: OrderDetail[] = cartItems.map(item => ({
         productId: item.product.id,
@@ -125,23 +138,29 @@ export class PaymentConfirmationComponent implements OnInit {
       };
       
       // Guardar la orden usando el servicio
-      this.orderService.createOrder(order).subscribe({
-        next: (savedOrder) => {
-          console.log('Orden guardada:', savedOrder);
-          
-          // Vaciar el carrito después de guardar la orden
-          this.cartService.clearCart();
-          
-          this.orderSuccess = true;
-          this.loading = false;
-        },
-        error: (error: Error) => {
-          console.error('Error al guardar la orden:', error);
-          this.error = 'El pago fue procesado correctamente, pero hubo un error al registrar la orden.';
-          this.loading = false;
-        }
-      });
-    });
+      this.orderService.createOrder(order)
+        .pipe(take(1))
+        .subscribe({
+          next: (savedOrder) => {
+            console.log('Orden guardada:', savedOrder);
+            
+            // Vaciar el carrito después de guardar la orden
+            this.cartService.clearCart();
+            
+            this.orderSuccess = true;
+            this.loading = false;
+          },
+          error: (error: Error) => {
+            console.error('Error al guardar la orden:', error);
+            this.error = 'El pago fue procesado correctamente, pero hubo un error al registrar la orden.';
+            this.loading = false;
+          }
+        });
+    } catch (err) {
+      console.error('Error al procesar la orden:', err);
+      this.error = 'Ocurrió un error al procesar la orden.';
+      this.loading = false;
+    }
   }
 
   formatPrice(price: number): string {

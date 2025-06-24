@@ -155,7 +155,7 @@ export class PaymentComponent implements OnInit {
 
   showLoginForm() {
     this.isLoggedIn = true;
-    this.customerName = 'Juan Pérez';
+    this.customerName = 'Diego';
     this.discount = 10;
     this.calculateTotal();
   }
